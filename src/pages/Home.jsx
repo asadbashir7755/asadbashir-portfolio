@@ -6,6 +6,7 @@ import Proficiency from '../sections/Proficiency';
 import Experience from '../sections/Experience';
 import Projects from '../sections/Projects';
 import Achievements from '../sections/Achievements';
+import BlogPreview from '../sections/BlogPreview';
 import Contact from '../sections/Contact';
 
 const Home = () => {
@@ -18,6 +19,7 @@ const Home = () => {
             <Experience />
             <Projects />
             <Achievements />
+            <BlogPreview />
             <Contact />
         </>
     );

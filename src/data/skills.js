@@ -36,8 +36,8 @@ export const skills = [
 ];
 
 export const proficiency = [
-    { name: "Linux & Server Administration", value: 85 },
-    { name: "Cloud & DevOps Automation", value: 75 },
-    { name: "CI/CD & Deployment", value: 80 },
-    { name: "Full-Stack Development", value: 90 }
+    { name: "Linux & Server Administration", value: 90 },
+    { name: "Cloud & DevOps Automation", value: 90 },
+    { name: "CI/CD & Deployment", value: 90 },
+    { name: "Full-Stack Development", value: 80 }
 ];

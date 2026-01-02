@@ -20,6 +20,10 @@ const parseFrontMatter = (text) => {
             // Handle array tags (simple comma separation)
             if (value.startsWith('[') && value.endsWith(']')) {
                 value = value.slice(1, -1).split(',').map(item => item.trim().replace(/^['"](.*)['"]$/, '$1'));
+            } else if (value === 'true') {
+                value = true;
+            } else if (value === 'false') {
+                value = false;
             }
 
             data[key] = value;

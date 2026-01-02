@@ -6,17 +6,17 @@ export const profile = {
     description: "A DevOps-focused software engineer with a strong foundation in Linux, AWS, Docker, Ansible, CI/CD pipelines, and automation. I enjoy building scalable systems, automating workflows, and improving deployment reliability while leveraging my MERN stack background.",
     imagePath: "/image.png",
     social: {
-        linkedin: "https://linkedin.com/in/yourprofile",
-        github: "https://github.com/yourusername",
-        facebook: "https://facebook.com/yourprofile",
-        instagram: "https://instagram.com/yourprofile",
-        twitter: "https://twitter.com/yourhandle"
+        linkedin: "https://www.linkedin.com/in/asad-bashir-772b73299?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+        github: "https://github.com/asadbashir7755",
+        facebook: "https://www.facebook.com/share/1B8fR2SDMr/?mibextid=wwXIfr",
+        instagram: "https://www.instagram.com/code_with_asad?igsh=eGxtMnVmazloMHp2&utm_source=qr",
+        twitter: "https://x.com/asadbashir7755?s=21"
     },
     contact: {
         phone: "03400569133",
         whatsapp: "03400569133",
-        email: "your.email@example.com",
-        resumeUrl: "/resume.pdf"
+        email: "asadbashir2229526@gmail.com",
+        resumeUrl: "/ASADBASHIR_CV.pdf"
     }
 };
 

@@ -16,6 +16,9 @@ const BlogList = () => {
         setFilteredBlogs(loadedBlogs);
     }, []);
 
+    const featuredBlogs = blogs.filter(b => b.featured === true);
+    const regularBlogs = blogs.filter(b => b.featured !== true);
+
     useEffect(() => {
         let result = blogs;
 
@@ -71,8 +74,8 @@ const BlogList = () => {
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${selectedCategory === cat
-                                        ? 'bg-green-500 text-white'
-                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                    ? 'bg-green-500 text-white'
+                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                     }`}
                             >
                                 {cat}
@@ -81,9 +84,85 @@ const BlogList = () => {
                     </div>
                 </div>
 
-                {/* Grid */}
+                {/* Featured Section - Only visible when no search/filter is active */}
+                {searchTerm === '' && selectedCategory === 'All' && featuredBlogs.length > 0 && (
+                    <div className="mb-16">
+                        <motion.h2
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="text-2xl font-bold mb-8 flex items-center gap-3"
+                        >
+                            <span className="text-yellow-400 text-3xl">★</span> Featured Posts
+                        </motion.h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {featuredBlogs.map((blog, index) => (
+                                <motion.div
+                                    key={blog.slug}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                                    className="bg-gray-800 rounded-xl overflow-hidden shadow-xl border border-yellow-500/30 hover:border-yellow-500 transition-all hover:translate-y-[-5px] group"
+                                >
+                                    {/* Cover Image */}
+                                    <div className="h-48 bg-gray-700 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                        {blog.image ? (
+                                            <img
+                                                src={blog.image}
+                                                alt={blog.title}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gray-600 text-6xl opacity-20">
+                                                <FaTag />
+                                            </div>
+                                        )}
+                                        <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
+                                            {blog.category}
+                                        </div>
+                                        {/* Featured Badge */}
+                                        <div className="absolute top-4 left-4 bg-yellow-500 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
+                                            Featured
+                                        </div>
+                                    </div>
+
+                                    <div className="p-6">
+                                        <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
+                                            <span className="flex items-center gap-1"><FaCalendarAlt /> {blog.date}</span>
+                                            <span className="flex items-center gap-1"><FaClock /> {blog.readTime || "5 min read"}</span>
+                                        </div>
+
+                                        <h2 className="text-xl font-bold mb-3 text-white group-hover:text-yellow-400 transition-colors line-clamp-2">
+                                            {blog.title}
+                                        </h2>
+
+                                        <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
+                                            {blog.description}
+                                        </p>
+
+                                        <Link
+                                            to={`/blog/${blog.slug}`}
+                                            className="inline-block w-full text-center bg-gray-700 hover:bg-yellow-500 hover:text-gray-900 text-white py-3 rounded-lg font-medium transition-all"
+                                        >
+                                            Read Article
+                                        </Link>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Grid Header if featured exists */}
+                {searchTerm === '' && selectedCategory === 'All' && featuredBlogs.length > 0 && (
+                    <h2 className="text-2xl font-bold mb-8 text-gray-300 border-l-4 border-green-500 pl-4">
+                        Latest Articles
+                    </h2>
+                )}
+
+                {/* Main Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredBlogs.map((blog, index) => (
+                    {(searchTerm === '' && selectedCategory === 'All' ? regularBlogs : filteredBlogs).map((blog, index) => (
                         <motion.div
                             key={blog.slug}
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -91,14 +170,20 @@ const BlogList = () => {
                             transition={{ duration: 0.3, delay: index * 0.1 }}
                             className="bg-gray-800 rounded-xl overflow-hidden shadow-xl border border-gray-700 hover:border-green-500 transition-all hover:translate-y-[-5px] group"
                         >
-                            {/* Cover Image Placeholder - In real usage, you'd check if blog.image exists */}
-                            <div className="h-48 bg-gray-700 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60"></div>
-                                {/* Dynamic Pattern or Image */}
-                                <div className="w-full h-full flex items-center justify-center text-gray-600 text-6xl opacity-20 group-hover:scale-110 transition-transform duration-500">
-                                    <FaTag />
-                                </div>
-                                <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                            {/* Cover Image */}
+                            <div className="h-48 bg-gray-700 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                {blog.image ? (
+                                    <img
+                                        src={blog.image}
+                                        alt={blog.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gray-600 text-6xl opacity-20">
+                                        <FaTag />
+                                    </div>
+                                )}
+                                <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
                                     {blog.category}
                                 </div>
                             </div>
