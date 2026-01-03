@@ -28,7 +28,7 @@ const Contact = () => {
 
                     <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 mb-16 w-full max-w-2xl mx-auto">
                         <a
-                            href={`https://wa.me/${profile.contact.whatsapp}`}
+                            href={profile.contact.whatsappLink}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 flex items-center justify-center gap-4 bg-gray-800 hover:bg-gray-700 px-6 py-6 rounded-xl transition-all border border-gray-700 hover:border-green-500 group shadow-lg"

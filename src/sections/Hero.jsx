@@ -67,7 +67,7 @@ const Hero = () => {
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
                         <a
-                            href={`https://wa.me/${profile.contact.whatsapp}`}
+                            href={profile.contact.whatsappLink}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-6 py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-500/20"

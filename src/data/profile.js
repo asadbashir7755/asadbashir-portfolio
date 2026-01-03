@@ -15,6 +15,7 @@ export const profile = {
     contact: {
         phone: "03400569133",
         whatsapp: "03400569133",
+        whatsappLink: "https://wa.link/cq66yv",
         email: "asadbashir2229526@gmail.com",
         resumeUrl: "/ASADBASHIR_CV.pdf"
     }
