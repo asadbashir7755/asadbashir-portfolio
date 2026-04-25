@@ -7,7 +7,7 @@ category: "Linux"
 tags: ["Linux", "CentOS", "Ubuntu", "System Administration", "DevOps", "Bash"]
 image: "/images/blogs/linux-mastery/cover.png"
 readTime: "9 min read"
-----------------------
+---
 
 # Linux System Administration: My Foundation for DevOps Engineering
 

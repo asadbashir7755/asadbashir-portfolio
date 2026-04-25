@@ -9,13 +9,13 @@ const parseFrontMatter = (text) => {
     const content = match[2].trim();
 
     const data = {};
-    frontMatterBlock.split('\n').forEach(line => {
+    frontMatterBlock.split(/\r?\n/).forEach(line => {
         const parts = line.split(':');
         if (parts.length >= 2) {
             const key = parts[0].trim();
             let value = parts.slice(1).join(':').trim();
             // Remove quotes if present
-            value = value.replace(/^['"](.*)['"]$/, '$1');
+            value = value.replace(/^['"](.*)['"]$/, '$1').trim();
 
             // Handle array tags (simple comma separation)
             if (value.startsWith('[') && value.endsWith(']')) {
