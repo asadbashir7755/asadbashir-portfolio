@@ -1,0 +1,284 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+/*
+ * Palette concept: amber monochrome CRT. Near-black base, off-white text,
+ * a single amber accent used sparingly for emphasis and interaction.
+ * Deliberately avoids the emerald-on-slate scheme every DevOps template uses.
+ *
+ * Contrast, measured against the LIGHTEST surface these sit on (--color-raised
+ * #161619) so every combination clears WCAG AA 4.5:1 for normal-size text:
+ *   fg        #ececee  16.0:1
+ *   fg-muted  #9a9aa2   6.5:1
+ *   fg-faint  #83838c   4.8:1
+ *   accent    #f0b429  10.7:1 on --color-bg
+ *
+ * fg-faint was originally #6b6b73, which measured 3.4:1 on raised surfaces and
+ * failed the axe color-contrast audit on six nodes. Do not darken it again.
+ */
+@theme {
+  --color-bg: #09090a;
+  --color-surface: #0f0f11;
+  --color-raised: #161619;
+
+  --color-line: rgba(255, 255, 255, 0.07);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
+
+  --color-fg: #ececee;
+  --color-fg-muted: #9a9aa2;
+  --color-fg-faint: #83838c;
+
+  --color-accent: #f0b429;
+  --color-accent-soft: rgba(240, 180, 41, 0.12);
+  --color-accent-line: rgba(240, 180, 41, 0.35);
+
+  --color-live: #4ade80;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --spacing-section: 7rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+html {
+  scroll-behavior: smooth;
+  /* Sticky header offset so anchor targets are not hidden behind the nav. */
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #09090a;
+}
+
+/* Visible, consistent focus ring for keyboard users. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #26262b;
+  border: 3px solid var(--color-bg);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a42;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal                                                       */
+/* ------------------------------------------------------------------ */
+/*
+ * Driven by ONE shared IntersectionObserver in components/ui/RevealObserver.tsx,
+ * mounted once in the root layout. Reveal.tsx itself is a server component that
+ * only emits this class.
+ *
+ * The no-JS / reduced-motion fallbacks below guarantee content is always
+ * visible even if the observer never runs.
+ */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /*
+   * Deliberately NO `will-change` here. There are ~50 .reveal elements on the
+   * home page; promoting every one to its own compositor layer up front cost
+   * ~700ms of style/layout under Lighthouse's 4x CPU throttle and pushed LCP
+   * to 3.0s. The transition is cheap enough without it.
+   */
+}
+
+.reveal[data-visible='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal[data-visible='true'] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .cursor-blink {
+    animation: none;
+  }
+}
+
+.cursor-blink {
+  animation: blink 1.15s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Faint grid backdrop for the hero. Masked so it fades out at the edges. */
+.grid-backdrop {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Article typography                                                  */
+/* ------------------------------------------------------------------ */
+
+.prose-tech {
+  --tw-prose-body: var(--color-fg-muted);
+  --tw-prose-headings: var(--color-fg);
+  --tw-prose-lead: var(--color-fg-muted);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-fg);
+  --tw-prose-counters: var(--color-fg-faint);
+  --tw-prose-bullets: #33333a;
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-fg);
+  --tw-prose-quote-borders: var(--color-accent-line);
+  --tw-prose-captions: var(--color-fg-faint);
+  --tw-prose-code: var(--color-fg);
+  --tw-prose-pre-code: #d4d4d8;
+  --tw-prose-pre-bg: var(--color-surface);
+  --tw-prose-th-borders: var(--color-line-strong);
+  --tw-prose-td-borders: var(--color-line);
+}
+
+.prose-tech :where(h2, h3, h4) {
+  scroll-margin-top: 6rem;
+  letter-spacing: -0.02em;
+}
+
+/* Headings are wrapped in anchors by rehype-autolink-headings. Keep them
+   looking like headings, not links, until hovered. */
+.prose-tech .heading-anchor {
+  color: inherit;
+  text-decoration: none;
+}
+.prose-tech .heading-anchor:hover {
+  text-decoration: none;
+}
+.prose-tech :where(h2, h3):hover .heading-anchor::after {
+  content: ' #';
+  color: var(--color-accent);
+  font-weight: 400;
+}
+
+.prose-tech :where(code):not(:where(pre code)) {
+  background: var(--color-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.875em;
+  font-weight: 450;
+}
+.prose-tech :where(code):not(:where(pre code))::before,
+.prose-tech :where(code):not(:where(pre code))::after {
+  content: none;
+}
+
+.prose-tech :where(pre) {
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.prose-tech :where(img) {
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  /* rehype-image-attrs stamps intrinsic width/height on these. `height: auto`
+     keeps the aspect ratio correct once they scale below their natural width,
+     while the attributes still reserve the right space (no layout shift). */
+  height: auto;
+}
+
+.prose-tech :where(a):not(.heading-anchor) {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Syntax highlighting (highlight.js class names, custom amber theme)   */
+/* ------------------------------------------------------------------ */
+
+.hljs-comment,
+.hljs-quote {
+  /* Same 4.5:1 floor as --color-fg-faint; code comments still have to be readable. */
+  color: #83838c;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-doctag,
+.hljs-type,
+.hljs-name,
+.hljs-strong {
+  color: #f0b429;
+}
+.hljs-string,
+.hljs-title,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+  color: #7ecba1;
+}
+.hljs-number,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-regexp,
+.hljs-link {
+  color: #8ab4f8;
+}
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-meta,
+.hljs-params {
+  color: #c9a3f0;
+}
+.hljs-deletion {
+  color: #f08c8c;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
