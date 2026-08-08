@@ -10,6 +10,14 @@ import Reveal from '@/components/ui/Reveal'
  * They were previously on an inner <div> that was the only child of the li,
  * so `last:pb-0` matched every entry and collapsed the gap between all roles.
  */
+/**
+ * Bullets per role on the homepage. The CyberoidTech entry has six, which on a
+ * 390px screen ran to most of a phone screen for one job. Three keeps the
+ * strongest evidence — they are ordered most-significant-first in site.ts — and
+ * the full set stays in the résumé.
+ */
+const MAX_HIGHLIGHTS = 3
+
 export function Experience({ index }: { index: string }) {
   const copy = site.sections.experience
   return (
@@ -40,7 +48,7 @@ export function Experience({ index }: { index: string }) {
                 </p>
 
                 <ul className="mt-6 space-y-3">
-                  {role.highlights.map((point, pi) => (
+                  {role.highlights.slice(0, MAX_HIGHLIGHTS).map((point, pi) => (
                     <li key={pi} className="flex gap-3.5 text-sm leading-relaxed text-fg-muted">
                       <span
                         className="mt-2.5 h-px w-3 shrink-0 bg-accent-line"

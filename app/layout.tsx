@@ -72,10 +72,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="antialiased">
-        {/* Without JS the reveal elements would stay at opacity 0. */}
-        <noscript>
-          <style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style>
-        </noscript>
+        {/* No noscript fallback needed: .reveal renders visible by default and
+            is only hidden once RevealObserver opts an element in. */}
         <Header />
         <main id="main">{children}</main>
         <Footer />

@@ -12,12 +12,15 @@
  * Contrast, measured against the LIGHTEST surface these sit on (--color-raised
  * #161619) so every combination clears WCAG AA 4.5:1 for normal-size text:
  *   fg        #ececee  16.0:1
- *   fg-muted  #9a9aa2   6.5:1
- *   fg-faint  #83838c   4.8:1
+ *   fg-muted  #a6a6ae   7.6:1
+ *   fg-faint  #8f8f98   5.6:1   (6.2:1 on --color-bg)
  *   accent    #f0b429  10.7:1 on --color-bg
  *
- * fg-faint was originally #6b6b73, which measured 3.4:1 on raised surfaces and
- * failed the axe color-contrast audit on six nodes. Do not darken it again.
+ * fg-faint was originally #6b6b73 (3.4:1) and failed axe on six nodes; it was
+ * raised to #83838c to pass, then to #8f8f98 for readability rather than bare
+ * compliance. Do not darken either of these again — every muted label on the
+ * site (skill notes, section eyebrows, dates, contact field names) uses them,
+ * which is why they are centralized here instead of patched per component.
  */
 @theme {
   --color-bg: #09090a;
@@ -28,8 +31,8 @@
   --color-line-strong: rgba(255, 255, 255, 0.14);
 
   --color-fg: #ececee;
-  --color-fg-muted: #9a9aa2;
-  --color-fg-faint: #83838c;
+  --color-fg-muted: #a6a6ae;
+  --color-fg-faint: #8f8f98;
 
   --color-accent: #f0b429;
   --color-accent-soft: rgba(240, 180, 41, 0.12);
@@ -39,8 +42,28 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-mono-jb), ui-monospace, 'SF Mono', Menlo, monospace;
+}
 
-  --spacing-section: 7rem;
+/*
+ * Single source of vertical rhythm. Every section uses `.section-y`; the hero
+ * uses `.section-y-hero`, which is the same block spacing plus room for the
+ * fixed header. Change the numbers here and the whole page moves together.
+ */
+.section-y {
+  padding-block: 3rem;
+}
+
+.section-y-hero {
+  padding-block: 5.5rem 3rem;
+}
+
+@media (min-width: 768px) {
+  .section-y {
+    padding-block: 6rem;
+  }
+  .section-y-hero {
+    padding-block: 8.5rem 6rem;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -102,37 +125,55 @@ body {
  * The no-JS / reduced-motion fallbacks below guarantee content is always
  * visible even if the observer never runs.
  */
+/*
+ * The default state is VISIBLE. Nothing here may depend on JavaScript to make
+ * content readable — it previously started at `opacity: 0`, which meant the
+ * About intro rendered faded until the observer fired, and printed blank.
+ *
+ * The hidden state is opt-in: RevealObserver stamps `data-reveal="armed"` on
+ * elements that are below the fold at mount, and only then do they animate in.
+ * Elements already on screen are never armed, so they cannot flash.
+ *
+ * Result: no JS, reduced motion, and print all render at full opacity.
+ */
 .reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  /*
-   * Deliberately NO `will-change` here. There are ~50 .reveal elements on the
-   * home page; promoting every one to its own compositor layer up front cost
-   * ~700ms of style/layout under Lighthouse's 4x CPU throttle and pushed LCP
-   * to 3.0s. The transition is cheap enough without it.
-   */
-}
-
-.reveal[data-visible='true'] {
   opacity: 1;
   transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal[data-reveal='armed'] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    /*
+     * Deliberately NO `will-change`. There are ~50 .reveal elements on the home
+     * page; promoting every one to its own compositor layer up front cost
+     * ~700ms of style/layout under Lighthouse's 4x CPU throttle.
+     */
+  }
+
+  .reveal[data-reveal='armed'][data-visible='true'] {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .reveal,
-  .reveal[data-visible='true'] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
   .cursor-blink {
     animation: none;
+  }
+}
+
+@media print {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 
@@ -154,6 +195,48 @@ body {
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* ------------------------------------------------------------------ */
+/* FAQ disclosure                                                      */
+/* ------------------------------------------------------------------ */
+/*
+ * The marker is a ::before so it never becomes part of the summary's
+ * accessible name — a screen reader announces the question, not "▸ question".
+ */
+.faq-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding-block: 1rem;
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.2s;
+}
+
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-summary::before {
+  content: '▸';
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  transition: transform 0.2s ease;
+}
+
+details[open] > .faq-summary::before {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-summary::before {
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */

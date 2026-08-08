@@ -38,7 +38,6 @@ export interface Person {
   tagline: string
   /** Longer bio used in About and JSON-LD `description`. */
   bio: string[]
-  avatar: { src: string; alt: string; width: number; height: number }
   /** Optional — omitted from JSON-LD entirely when undefined. */
   location?: string
 }
@@ -154,7 +153,20 @@ export interface SiteContent {
     primaryCta: { label: string; href: string }
     secondaryCta: { label: string; href: string }
   }
-  about: { heading: string; body: string[] }
+  about: {
+    heading: string
+    body: string[]
+    /**
+     * Shown beside the bio in place of a portrait. A real snippet of work is
+     * stronger evidence to an engineer reading this than a photo is.
+     */
+    snippet: {
+      filename: string
+      caption: string
+      /** Rendered verbatim in a <pre>. Keep lines under ~46 chars for mobile. */
+      code: string
+    }
+  }
   skills: SkillCategory[]
   experience: Role[]
   projects: Project[]
@@ -217,15 +229,6 @@ export const site: SiteContent = {
       'Most of my day-to-day is AWS, Terraform and GitHub Actions: provisioning infrastructure as code, replacing static credentials with OIDC-based authentication, getting services onto ECS Fargate behind an ALB, and wiring Snyk and Trivy into pipelines so vulnerable images never reach a registry.',
       'Outside client work I run a full Kubernetes stack — ArgoCD for GitOps, Vault and External Secrets Operator for secrets, kube-prometheus-stack with Loki for observability — because the fastest way to understand a tool is to operate it when nobody is on call but you.',
     ],
-    avatar: {
-      // Square centre-crop at 640px (2x the largest display size, 224px).
-      // The original was a 3024x4032 / 9.2MB phone photo — replace this file
-      // with a proper headshot when you have one, keeping it square.
-      src: '/avatar.png',
-      alt: 'Asad Bashir',
-      width: 640,
-      height: 640,
-    },
     // TODO: add city/country if you want it in JSON-LD and the contact block.
     // Omitted rather than guessed — it is not stated anywhere in the current site.
     location: undefined,
@@ -298,9 +301,27 @@ export const site: SiteContent = {
   about: {
     heading: 'About',
     body: [
-      'I moved into DevOps from full-stack development, which turned out to be an advantage: I had already felt what a broken deploy does to a team from the application side before I was the one responsible for fixing it.',
       'What I care about is the boring kind of reliability — credentials that expire on their own, pipelines that fail loudly before production does, and infrastructure that someone else can read six months later without calling me.',
     ],
+    // Replaces the portrait that used to sit here. This is the actual change
+    // that took static AWS keys out of CI: the workflow requests an OIDC token
+    // and assumes a role, so there is no long-lived secret left to leak.
+    snippet: {
+      filename: '.github/workflows/deploy.yml',
+      caption: 'How the pipelines authenticate to AWS — no stored keys.',
+      // Lines kept short deliberately: this renders in a narrow column on a
+      // phone, and a long line turns into a horizontal scrollbar.
+      code: `permissions:
+  id-token: write
+  contents: read
+
+- uses: configure-aws-credentials@v4
+  with:
+    role-to-assume: \${{ secrets.ROLE_ARN }}
+    aws-region: eu-north-1
+
+# no AWS_SECRET_ACCESS_KEY anywhere`,
+    },
   },
 
   skills: [
@@ -318,11 +339,25 @@ export const site: SiteContent = {
         { name: 'VPC & Networking', note: 'Public/private subnets, NAT, route tables', group: 'AWS' },
         { name: 'Linux', note: 'CentOS, Ubuntu — server administration', group: 'AWS' },
 
-        { name: 'Hetzner Cloud', note: 'Provisioning and managing cloud servers', group: 'Hetzner' },
-        { name: 'Hetzner Object Storage', note: 'S3-compatible buckets', group: 'Hetzner' },
-        { name: 'k3s on Hetzner', note: 'Self-managed Kubernetes on Hetzner servers', group: 'Hetzner' },
-
-        { name: 'RunPod', note: 'GPU infrastructure for model deployment', group: 'RunPod' },
+        // Grouped as "Other providers" rather than one group per vendor: RunPod
+        // alone made a one-item group, which read as a formatting mistake.
+        // k3s is intentionally NOT listed here — it lives once, under
+        // Containers & Orchestration, with the Hetzner detail in its note.
+        {
+          name: 'Hetzner Cloud',
+          note: 'Provisioning and managing cloud servers',
+          group: 'Other providers',
+        },
+        {
+          name: 'Hetzner Object Storage',
+          note: 'S3-compatible buckets',
+          group: 'Other providers',
+        },
+        {
+          name: 'RunPod',
+          note: 'GPU infrastructure for model deployment',
+          group: 'Other providers',
+        },
       ],
     },
     {
@@ -353,9 +388,10 @@ export const site: SiteContent = {
       skills: [
         { name: 'Docker', note: 'Image builds, multi-stage, registries' },
         { name: 'Docker Compose', note: 'Multi-service local environments' },
-        { name: 'Kubernetes', note: 'k3s and Minikube clusters' },
+        { name: 'Kubernetes', note: 'Cluster operations, workloads, networking' },
+        // The single k3s entry on the site. Do not add another under Cloud.
+        { name: 'k3s', note: 'Self-managed cluster on a Hetzner cloud server' },
         { name: 'ArgoCD', note: 'GitOps continuous delivery' },
-        { name: 'k3s', note: 'Lightweight cluster on a Hetzner cloud server' },
       ],
     },
     {
@@ -592,26 +628,15 @@ export const site: SiteContent = {
   ],
 
   /**
-   * FAQ — plain answers to the questions a hiring manager or recruiter actually
-   * asks. Every answer here is drawn from the experience and projects above;
-   * keep it that way. This block also feeds FAQPage structured data.
+   * FAQ — trimmed to the three questions whose answers are NOT already visible
+   * elsewhere on the page. The previous nine largely restated About, Skills,
+   * Experience and Projects, which is duplicate content for both readers and
+   * search engines.
+   *
+   * Rule for adding one: if a visitor could answer it by scrolling, it does not
+   * belong here. This block also feeds FAQPage structured data.
    */
   faq: [
-    {
-      question: 'What AWS services has Asad worked with in production?',
-      answer:
-        'EC2, ECS Fargate, ECR, RDS, S3, CloudFront, Application Load Balancer, IAM, Secrets Manager, VPC, Client VPN and WAF. The ECS Fargate work was a client production environment — cluster setup, task execution roles, task definitions reading from Secrets Manager, and an ALB routing by path across two services.',
-    },
-    {
-      question: 'How does Asad handle secrets in CI/CD pipelines?',
-      answer:
-        'By not storing them where possible. In GitHub Actions he uses OIDC to assume a short-lived AWS role instead of holding static access keys in repository secrets. For application configuration, secrets come from AWS Secrets Manager at task startup, and in Kubernetes from HashiCorp Vault via the Kubernetes auth method, synced by External Secrets Operator.',
-    },
-    {
-      question: 'What is his experience with Kubernetes?',
-      answer:
-        'He runs a full GitOps stack on k3s on a Hetzner cloud server, and has also worked with ArgoCD, Vault and External Secrets Operator in a client context. The stack includes Helm-managed releases and kube-prometheus-stack with Loki and Promtail for metrics and logs. This is operational experience on clusters he maintains himself rather than a managed-service-only background.',
-    },
     {
       question: 'What infrastructure-as-code tools has Asad used?',
       answer:
@@ -626,21 +651,6 @@ export const site: SiteContent = {
       question: 'What database experience does he have?',
       answer:
         'Supabase and PostgreSQL, including Row Level Security policies for access control at the database layer rather than only in application code. Also AWS RDS in production, where he configured automated backups and resolved security group misconfigurations, and MongoDB for Node.js applications.',
-    },
-    {
-      question: 'How does he approach security in a delivery pipeline?',
-      answer:
-        'Scanning runs as a gate, not a report. Snyk covers dependencies and static analysis, Trivy scans container images, and both are configured to fail the build on critical findings so a vulnerable image never reaches the registry. On the access side, the priority is removing long-lived credentials — OIDC federation instead of stored keys, and scoped IAM roles instead of broad permissions.',
-    },
-    {
-      question: 'What certifications does he hold?',
-      answer:
-        'AWS Certified Cloud Practitioner, with AWS Certified Solutions Architect – Associate (SAA-C03) currently in progress. He has also completed structured training in Linux administration, Ansible automation and full-stack development.',
-    },
-    {
-      question: 'Is he available for DevOps or platform engineering roles?',
-      answer:
-        'Yes. He is open to DevOps, platform and cloud infrastructure roles, and responds to email within a day. The fastest way to reach him is the email address in the contact section.',
     },
   ],
 
