@@ -30,7 +30,7 @@ export function Section({
     <section
       id={id}
       aria-labelledby={`${id}-heading`}
-      className={`border-t border-line py-16 md:py-24 ${className}`}
+      className={`section-y border-t border-line ${className}`}
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>

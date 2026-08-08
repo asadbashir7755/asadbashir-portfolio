@@ -47,6 +47,23 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
+  /**
+   * Canonical host is the apex, committodeploy.dev (matches site.meta.url,
+   * which drives canonical tags, og:url, sitemap and JSON-LD). Anything landing
+   * on www is permanently redirected so the two hosts never split ranking
+   * signals or serve duplicate content.
+   */
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.committodeploy.dev' }],
+        destination: 'https://committodeploy.dev/:path*',
+        permanent: true,
+      },
+    ]
+  },
+
   async headers() {
     return [
       {

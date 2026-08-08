@@ -22,6 +22,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: `${site.meta.url}/skills`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
   ]
 
   const postRoutes: MetadataRoute.Sitemap = getAllPosts().map((post) => {

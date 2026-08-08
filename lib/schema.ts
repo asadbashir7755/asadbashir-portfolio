@@ -25,7 +25,8 @@ export function personSchema() {
     jobTitle: person.title,
     description: person.bio.join(' '),
     url: meta.url,
-    image: abs(person.avatar.src),
+    // The generated social card, not a portrait — there is no photo on the site.
+    image: abs('/opengraph-image'),
     email: `mailto:${site.contact.email}`,
     telephone: site.contact.phone,
     // sameAs is what links this site to the same person on other platforms.

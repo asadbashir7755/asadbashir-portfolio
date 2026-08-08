@@ -3,8 +3,19 @@ import { site } from '@/content/site'
 import Section from '@/components/ui/Section'
 import Reveal from '@/components/ui/Reveal'
 
+/**
+ * Projects shown on the homepage. Six cards stack to six full screens on a
+ * phone; four covers all the infrastructure work and drops only the two
+ * weakest for a DevOps reader (Ansible provisioning and the full-stack rental
+ * platform), both of which are still linked from GitHub.
+ */
+const MAX_PROJECTS = 4
+
 export function Projects({ index }: { index: string }) {
   const copy = site.sections.projects
+  const shown = site.projects.slice(0, MAX_PROJECTS)
+  const hidden = site.projects.length - shown.length
+
   return (
     <Section
       id="projects"
@@ -14,7 +25,7 @@ export function Projects({ index }: { index: string }) {
       intro={copy.intro}
     >
       <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
-        {site.projects.map((project, i) => (
+        {shown.map((project, i) => (
           <Reveal key={project.slug} delay={i * 40} className="h-full bg-bg">
             <article className="flex h-full flex-col p-6 transition-colors hover:bg-surface sm:p-7">
               <h3 className="text-base font-semibold tracking-tight text-fg">{project.title}</h3>
@@ -72,6 +83,21 @@ export function Projects({ index }: { index: string }) {
           </Reveal>
         ))}
       </div>
+
+      {hidden > 0 ? (
+        <Reveal>
+          <div className="mt-8">
+            <a
+              href={site.social[0].href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-sm text-accent transition-opacity hover:opacity-80"
+            >
+              {hidden} more on GitHub <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </Reveal>
+      ) : null}
     </Section>
   )
 }
