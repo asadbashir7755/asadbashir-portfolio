@@ -17,6 +17,12 @@ export function FieldNotes({ index }: { index: string }) {
   const { fieldNotes } = site
   if (fieldNotes.length === 0) return null
 
+  // Track the count rather than always using three columns. The container
+  // paints the hairlines, so a single card in a 3-col grid rendered as a
+  // third-width card next to two empty bordered cells.
+  const columns =
+    fieldNotes.length === 1 ? '' : fieldNotes.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'
+
   return (
     <Section
       id="field-notes"
@@ -25,7 +31,7 @@ export function FieldNotes({ index }: { index: string }) {
       title={copy.title}
       intro={copy.intro}
     >
-      <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-3">
+      <div className={`grid gap-px overflow-hidden rounded-xl border border-line bg-line ${columns}`}>
         {/* Keyed by index: this list is static, never reordered or filtered,
             and the placeholder entries can legitimately share a title. */}
         {fieldNotes.map((note, i) => (

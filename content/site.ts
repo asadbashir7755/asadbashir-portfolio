@@ -294,18 +294,6 @@ export const site: SiteContent = {
         'TODO: one or two sentences describing it. Suggested topic, since you have done this work twice: removing static AWS credentials from CI by moving to OIDC.',
       href: 'https://medium.com/@asadbashir2229526',
     },
-    {
-      title: 'TODO: title of your second post',
-      description:
-        'TODO: one or two sentences. Suggested topic: the IngressNightmare (CVE-2025-1974) response, what an exposed admission webhook on port 8443 allowed, and how you closed it.',
-      href: 'https://medium.com/@asadbashir2229526',
-    },
-    {
-      title: 'TODO: title of your third post',
-      description:
-        'TODO: one or two sentences. Suggested topic: the GitOps stack on k3s with ArgoCD, Vault and External Secrets Operator, and why the two-branch split matters.',
-      href: 'https://medium.com/@asadbashir2229526',
-    },
   ],
 
   hero: {
@@ -570,8 +558,21 @@ export const site: SiteContent = {
       slug: 'ecs-fargate',
       title: 'ECS Fargate Production Environment',
       description:
-        'Client production setup on ECS Fargate: cluster creation, IAM task execution roles, task definitions pulling configuration from AWS Secrets Manager, and an Application Load Balancer doing path-based routing across two services.',
-      stack: ['ECS Fargate', 'IAM', 'Secrets Manager', 'ALB', 'Docker'],
+        'Client production platform on ECS Fargate: a custom VPC with public and private subnets across availability zones, an ECS cluster running multiple services, and IAM task execution roles with task definitions pulling configuration from Secrets Manager. Traffic splits across an internet-facing load balancer for public routes and an internal one for service-to-service calls, with AWS Client VPN as the only way into internal endpoints. A multi-tenant RDS instance sits in private subnets, and Snyk and Trivy run as blocking gates in the pipeline.',
+      stack: [
+        'ECS Fargate',
+        'VPC',
+        'Multi-AZ Subnets',
+        'ALB',
+        'Internal Load Balancer',
+        'AWS Client VPN',
+        'Multi-tenant RDS',
+        'Secrets Manager',
+        'IAM',
+        'Snyk',
+        'Trivy',
+        'Docker',
+      ],
       repo: null,
       demo: null,
       writeup: null,
@@ -587,12 +588,12 @@ export const site: SiteContent = {
       writeup: null,
     },
     {
-      slug: 'aws-vpc',
-      title: 'AWS VPC Network Architecture',
+      slug: 'shopix-aws-production',
+      title: 'Shopix Production AWS Infrastructure',
       description:
-        'A complete VPC built to standard practice: public and private subnets across availability zones, route tables, security groups, a NAT gateway for private egress, and an ALB fronting Auto Scaling Groups.',
-      stack: ['VPC', 'EC2', 'ALB', 'Auto Scaling', 'NAT Gateway'],
-      repo: 'https://github.com/asadbashir7755',
+        'A full-stack ecommerce platform on a custom VPC across two availability zones: an internet-facing ALB in public subnets, application servers in private subnets, and RDS MySQL with no public exposure. Deploys run through GitHub Actions using OIDC, so no static AWS keys exist anywhere, and server access is through SSM rather than open SSH.',
+      stack: ['AWS', 'VPC', 'ALB', 'RDS', 'ECR', 'SSM', 'OIDC', 'GitHub Actions', 'Docker'],
+      repo: 'https://github.com/asadbashir7755/shopix-aws-production',
       demo: null,
       writeup: null,
     },
