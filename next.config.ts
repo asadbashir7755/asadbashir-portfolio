@@ -47,22 +47,21 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
-  /**
-   * Canonical host is the apex, committodeploy.dev (matches site.meta.url,
-   * which drives canonical tags, og:url, sitemap and JSON-LD). Anything landing
-   * on www is permanently redirected so the two hosts never split ranking
-   * signals or serve duplicate content.
+  /*
+   * DO NOT add a www -> apex redirect here.
+   *
+   * Vercel already canonicalises the host at the edge, based on which domain is
+   * marked primary in the project's Domains settings. An app-level rule pointing
+   * the other way produces an infinite loop:
+   *
+   *   committodeploy.dev -> (Vercel) www.committodeploy.dev
+   *                      -> (this app) committodeploy.dev -> ...
+   *
+   * That is exactly what took the site down with ERR_TOO_MANY_REDIRECTS. The
+   * canonical host is committodeploy.dev (it is what site.meta.url drives into
+   * canonical tags, og:url, the sitemap and JSON-LD), and it is enforced by
+   * setting the apex as the primary domain in Vercel — one layer, one rule.
    */
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.committodeploy.dev' }],
-        destination: 'https://committodeploy.dev/:path*',
-        permanent: true,
-      },
-    ]
-  },
 
   async headers() {
     return [
