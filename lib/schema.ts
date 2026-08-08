@@ -1,5 +1,4 @@
 import { site } from '@/content/site'
-import type { PostMeta } from '@/lib/blog'
 
 /**
  * JSON-LD builders.
@@ -98,64 +97,3 @@ export function homeGraph() {
   }
 }
 
-export function blogIndexGraph(posts: PostMeta[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Blog',
-        '@id': `${meta.url}/blog#blog`,
-        url: `${meta.url}/blog`,
-        name: `Writing — ${person.name}`,
-        description:
-          'Field notes on AWS, Kubernetes, CI/CD and infrastructure security, written from production work.',
-        inLanguage: 'en',
-        author: { '@id': PERSON_ID },
-        blogPost: posts.map((p) => ({
-          '@type': 'BlogPosting',
-          '@id': `${meta.url}/blog/${p.slug}#post`,
-          headline: p.title,
-          url: `${meta.url}/blog/${p.slug}`,
-          datePublished: p.date,
-          description: p.description,
-        })),
-      },
-      personSchema(),
-    ],
-  }
-}
-
-export function postGraph(post: PostMeta) {
-  const url = `${meta.url}/blog/${post.slug}`
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'BlogPosting',
-        '@id': `${url}#post`,
-        headline: post.title,
-        description: post.description,
-        url,
-        datePublished: post.date,
-        dateModified: post.date,
-        inLanguage: 'en',
-        keywords: post.tags.join(', '),
-        articleSection: post.category,
-        // Social image is generated per post by app/blog/[slug]/opengraph-image.tsx.
-        image: `${url}/opengraph-image`,
-        author: { '@id': PERSON_ID },
-        publisher: { '@id': PERSON_ID },
-        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-      },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: meta.url },
-          { '@type': 'ListItem', position: 2, name: 'Writing', item: `${meta.url}/blog` },
-          { '@type': 'ListItem', position: 3, name: post.title, item: url },
-        ],
-      },
-      personSchema(),
-    ],
-  }
-}

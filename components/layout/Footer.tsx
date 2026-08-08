@@ -33,10 +33,10 @@ export function Footer() {
             ))}
             <li>
               <Link
-                href="/blog"
+                href="/#field-notes"
                 className="font-mono text-[13px] text-fg-muted transition-colors hover:text-accent"
               >
-                Writing
+                Field Notes
               </Link>
             </li>
             <li>

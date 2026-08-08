@@ -41,10 +41,13 @@ export function Certifications({ index }: { index: string }) {
                   )}
                 </h3>
 
+                {/* Earned reads green, in progress stays on the site's amber
+                    accent. Green is used nowhere else except the "available"
+                    dot in the hero, so it keeps its meaning. */}
                 <span
                   className={`shrink-0 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wide whitespace-nowrap uppercase ${
                     cert.status === 'earned'
-                      ? 'border-line text-fg-faint'
+                      ? 'border-live/40 text-live'
                       : 'border-accent-line text-accent'
                   }`}
                 >

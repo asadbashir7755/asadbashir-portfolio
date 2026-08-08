@@ -81,7 +81,7 @@ export interface Project {
   /** Repository URL, or null when the work lives in a private client repo. */
   repo: string | null
   demo: string | null
-  /** Links to a post in content/posts that covers this work in depth. */
+  /** External write-up URL for this project, or null. */
   writeup: string | null
 }
 
@@ -107,6 +107,14 @@ export interface FaqItem {
   answer: string
 }
 
+/** One Field Notes card. Links out to an external post rather than a local route. */
+export interface FieldNote {
+  title: string
+  description: string
+  /** External URL, e.g. the Medium post. */
+  href: string
+}
+
 export interface NavItem {
   label: string
   href: string
@@ -128,7 +136,7 @@ export type SectionKey =
   | 'achievements'
   | 'certifications'
   | 'faq'
-  | 'writing'
+  | 'fieldNotes'
   | 'contact'
 
 export interface SiteContent {
@@ -137,14 +145,7 @@ export interface SiteContent {
   nav: NavItem[]
   /** All section heading copy, so no component hardcodes user-facing text. */
   sections: Record<SectionKey, SectionCopy>
-  blog: {
-    title: string
-    description: string
-    /** Eyebrow shown above the blog index heading. */
-    eyebrow: string
-    relatedHeading: string
-    emptyState: string
-  }
+  fieldNotes: FieldNote[]
   hero: {
     /** Rendered in the terminal panel as the executed command. */
     command: string
@@ -239,7 +240,7 @@ export const site: SiteContent = {
     { label: 'Skills', href: '/#skills' },
     { label: 'Experience', href: '/#experience' },
     { label: 'Projects', href: '/#projects' },
-    { label: 'Writing', href: '/blog' },
+    { label: 'Field Notes', href: '/#field-notes' },
     { label: 'Contact', href: '/#contact' },
   ],
 
@@ -269,22 +270,43 @@ export const site: SiteContent = {
       title: 'Questions I get asked',
       intro: 'Direct answers to what recruiters and engineers ask most often.',
     },
-    writing: {
-      label: 'Writing',
+    fieldNotes: {
+      label: 'Field Notes',
       title: 'Notes from the work',
-      intro: 'Write-ups of things I actually configured, including what broke on the way.',
+      intro:
+        'Write-ups of things I configured and incidents I handled, including what broke on the way. Published on Medium.',
     },
     contact: { label: 'Contact', title: 'Get in touch' },
   },
 
-  blog: {
-    title: 'Writing',
-    description:
-      'Field notes on AWS, Kubernetes, CI/CD and infrastructure security — written from production work, including what broke along the way.',
-    eyebrow: 'writing',
-    relatedHeading: 'More reading',
-    emptyState: 'No posts published yet.',
-  },
+  /**
+   * Field Notes cards. Each one links out to a Medium post.
+   *
+   * TODO: every `href` below is a placeholder pointing at the Medium profile,
+   * not at a real post. Replace each with the published URL and rewrite the
+   * title and description to match what you actually wrote. Delete any entry
+   * you do not intend to write — the section hides itself when this is empty.
+   */
+  fieldNotes: [
+    {
+      title: 'TODO: title of your first post',
+      description:
+        'TODO: one or two sentences describing it. Suggested topic, since you have done this work twice: removing static AWS credentials from CI by moving to OIDC.',
+      href: 'https://medium.com/@asadbashir2229526',
+    },
+    {
+      title: 'TODO: title of your second post',
+      description:
+        'TODO: one or two sentences. Suggested topic: the IngressNightmare (CVE-2025-1974) response, what an exposed admission webhook on port 8443 allowed, and how you closed it.',
+      href: 'https://medium.com/@asadbashir2229526',
+    },
+    {
+      title: 'TODO: title of your third post',
+      description:
+        'TODO: one or two sentences. Suggested topic: the GitOps stack on k3s with ArgoCD, Vault and External Secrets Operator, and why the two-branch split matters.',
+      href: 'https://medium.com/@asadbashir2229526',
+    },
+  ],
 
   hero: {
     command: 'whoami --verbose',
@@ -295,7 +317,7 @@ export const site: SiteContent = {
       { key: 'shipping', value: 'OIDC pipelines, ECS Fargate, GitOps' },
     ],
     primaryCta: { label: 'View experience', href: '#experience' },
-    secondaryCta: { label: 'Read the writing', href: '/blog' },
+    secondaryCta: { label: 'Read the notes', href: '#field-notes' },
   },
 
   about: {
@@ -511,9 +533,9 @@ export const site: SiteContent = {
       description:
         'Removed static AWS credentials from CI by moving to OIDC-based authentication. Pipelines now assume a short-lived role to build images, push to ECR and deploy to EC2, with Snyk and Trivy scanning as blocking gates before anything ships.',
       stack: ['GitHub Actions', 'OIDC', 'AWS IAM', 'ECR', 'EC2', 'Snyk', 'Trivy'],
-      repo: 'https://github.com/asadbashir7755/CICD_PROJECT',
+      repo: 'https://github.com/asadbashir7755/wanderlust-jenkins-cicd',
       demo: null,
-      writeup: '/blog/github-actions-oidc',
+      writeup: null,
     },
     {
       slug: 'ecs-fargate',
@@ -523,7 +545,7 @@ export const site: SiteContent = {
       stack: ['ECS Fargate', 'IAM', 'Secrets Manager', 'ALB', 'Docker'],
       repo: null,
       demo: null,
-      writeup: '/blog/ecs-fargate-setup',
+      writeup: null,
     },
     {
       slug: 'kubernetes-stack',
@@ -533,7 +555,7 @@ export const site: SiteContent = {
       stack: ['k3s', 'ArgoCD', 'Vault', 'Helm', 'Prometheus', 'Loki'],
       repo: 'https://github.com/asadbashir7755',
       demo: null,
-      writeup: '/blog/k3s-hetzner-k8s',
+      writeup: null,
     },
     {
       slug: 'aws-vpc',
@@ -551,7 +573,7 @@ export const site: SiteContent = {
       description:
         'Automated provisioning and configuration across multiple servers using playbooks, roles, variables and conditionals, including EC2 automation via Ansible collections and passwordless SSH bootstrapping.',
       stack: ['Ansible', 'Linux', 'SSH', 'EC2', 'Bash'],
-      repo: 'https://github.com/asadbashir7755/Ansibel_Projects',
+      repo: 'https://github.com/asadbashir7755/ansible-learning',
       demo: null,
       writeup: null,
     },
@@ -561,7 +583,7 @@ export const site: SiteContent = {
       description:
         'Full-stack rental marketplace with advanced search, Stripe payments, real-time availability and an admin panel for landlords to manage listings and reservations. Final year project, graded with distinction.',
       stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'AWS'],
-      repo: 'https://github.com/asadbashir7755/Furnished-Home-Rental-FYP',
+      repo: 'https://github.com/asadbashir7755/furnished-home-rental',
       demo: null,
       writeup: null,
     },

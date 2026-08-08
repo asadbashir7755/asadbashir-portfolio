@@ -19,10 +19,10 @@ export default function NotFound() {
           Back home
         </Link>
         <Link
-          href="/blog"
+          href="/#field-notes"
           className="rounded-md border border-line-strong px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:border-accent hover:text-accent"
         >
-          Read the writing
+          Read the notes
         </Link>
       </div>
     </div>

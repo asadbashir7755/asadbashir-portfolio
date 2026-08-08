@@ -93,7 +93,7 @@ export function Projects({ index }: { index: string }) {
               rel="noopener noreferrer"
               className="font-mono text-sm text-accent transition-opacity hover:opacity-80"
             >
-              {hidden} more on GitHub <span aria-hidden="true">↗</span>
+              More on GitHub <span aria-hidden="true">↗</span>
             </a>
           </div>
         </Reveal>
