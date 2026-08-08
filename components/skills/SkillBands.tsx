@@ -6,7 +6,7 @@ import Reveal from '@/components/ui/Reveal'
  * The skills band layout, shared by the homepage summary and the full /skills
  * page so the two can never drift apart visually.
  *
- * Each category is a full-width band with a label gutter — the same shape as
+ * Each category is a full-width band with a label gutter, the same shape as
  * the Experience section. A band is only ever as tall as its own content, so
  * categories of wildly different sizes (Cloud has 12 entries, CI/CD has 4)
  * cannot leave the voids that a fixed column grid produced.

@@ -20,7 +20,7 @@ Blog posts are the one exception: they are markdown files in `content/posts/`.
 ```
 app/
   layout.tsx              root metadata, fonts, header/footer
-  page.tsx                home — composes every section
+  page.tsx                home, composes every section
   globals.css             design tokens + article typography
   opengraph-image.tsx     social card, generated from site.ts
   icon.tsx                favicon, generated
@@ -78,21 +78,21 @@ The route, sitemap entry, JSON-LD, and index card are all generated from that.
 Nothing else needs updating.
 
 Markdown is rendered to HTML **on the server at build time**, so posts ship as
-static HTML with no markdown parser in the client bundle — this is what makes
+static HTML with no markdown parser in the client bundle, this is what makes
 the writing indexable.
 
 ## Before going live
 
 Open items are marked `// TODO:` in `content/site.ts`:
 
-- `achievements` — three placeholder entries, including the IngressNightmare
+- `achievements`, three placeholder entries, including the IngressNightmare
   (CVE-2025-1974) remediation. **These are placeholders, not claims.** Fill in
   the real details or delete the entries; the section hides itself when the
   array is empty.
-- `certifications` — add the Credly badge URL and year for AWS Cloud Practitioner.
-- `contact.phone` — confirm the `+92` country code.
-- `person.location` — add if you want it in the Person schema.
-- `skills` (`iac`) — Terraform is deliberately absent. Add it when there is real
+- `certifications`, add the Credly badge URL and year for AWS Cloud Practitioner.
+- `contact.phone`, confirm the `+92` country code.
+- `person.location`, add if you want it in the Person schema.
+- `skills` (`iac`), Terraform is deliberately absent. Add it when there is real
   project experience behind it; the FAQ currently states it is a gap.
 
 Also confirm before launch:
@@ -110,7 +110,7 @@ runs typecheck, lint and build on pull requests so failures surface before Verce
 builds.
 
 Set the custom domain to `committodeploy.dev` in the Vercel project. The origin
-is read from `site.meta.url` for canonical URLs, sitemap and JSON-LD — change it
+is read from `site.meta.url` for canonical URLs, sitemap and JSON-LD, change it
 there if the domain changes.
 
 Response headers (CSP, HSTS, X-Frame-Options, Permissions-Policy) are defined in

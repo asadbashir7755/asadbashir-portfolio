@@ -3,7 +3,7 @@ import { site } from '@/content/site'
 
 /**
  * Above the fold, everything is readable on first paint. No per-character
- * typewriter, no delayed reveals — the only motion is the terminal cursor.
+ * typewriter, no delayed reveals, the only motion is the terminal cursor.
  * Text that arrives three seconds late is text most visitors never read.
  */
 export function Hero() {
@@ -63,7 +63,7 @@ export function Hero() {
           </ul>
         </div>
 
-        {/* Terminal panel. Static content rendered from site.hero.output —
+        {/* Terminal panel. Static content rendered from site.hero.output -
             it is a layout device, not a fake interactive shell. */}
         <div className="relative">
           <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/40">

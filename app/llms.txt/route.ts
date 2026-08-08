@@ -1,11 +1,11 @@
 import { site } from '@/content/site'
 
 /**
- * /llms.txt — https://llmstxt.org
+ * /llms.txt, https://llmstxt.org
  *
  * Structure required by the spec, in order:
  *   1. H1 with the site/project name        (the only REQUIRED element)
- *   2. Blockquote — short summary with key information
+ *   2. Blockquote, short summary with key information
  *   3. Free-form markdown (any block except headings) with detail
  *   4. Zero or more H2 sections, each a "file list": markdown list items of
  *      `[name](url)` followed optionally by `: notes`
@@ -20,7 +20,7 @@ import { site } from '@/content/site'
  * block above the first H2, which is where it now lives.
  *
  * Lighthouse's Agentic Browsing audit additionally requires an H1, at least one
- * `[text](url)` markdown link, and more than 50 characters — all satisfied here.
+ * `[text](url)` markdown link, and more than 50 characters, all satisfied here.
  *
  * Generated from content/site.ts so it cannot drift from the rendered site.
  */
@@ -31,11 +31,11 @@ export function GET() {
   const url = meta.url
 
   const lines: string[] = [
-    // 1. H1 — required.
+    // 1. H1, required.
     `# ${person.name}`,
     '',
     // 2. Blockquote summary.
-    `> ${person.title} — ${person.tagline} Working in production on AWS, Terraform, Kubernetes and CI/CD.`,
+    `> ${person.title}, ${person.tagline} Working in production on AWS, Terraform, Kubernetes and CI/CD.`,
     '',
     // 3. Free-form detail. No headings in this block, per the spec.
     ...person.bio.flatMap((p) => [p, '']),
@@ -44,11 +44,11 @@ export function GET() {
     `**Currently:** ${experience[0].role} at ${experience[0].company} (${experience[0].period}).`,
     '',
     '**Experience:**',
-    ...experience.map((r) => `- ${r.role}, ${r.company} (${r.period}) — ${r.summary}`),
+    ...experience.map((r) => `- ${r.role}, ${r.company} (${r.period}), ${r.summary}`),
     '',
     '**Certifications:**',
     ...certifications.map(
-      (c) => `- ${c.name} — ${c.status === 'earned' ? 'earned' : 'in progress'}`,
+      (c) => `- ${c.name}, ${c.status === 'earned' ? 'earned' : 'in progress'}`,
     ),
     '',
     // 4. H2 file lists. Every item is a markdown hyperlink.
@@ -64,7 +64,7 @@ export function GET() {
     ...social.map((s) => `- [${s.label}](${s.href}): ${s.handle}`),
     `- [Email](mailto:${contact.email}): Direct contact.`,
     '',
-    // Secondary material — agents may skip this section entirely.
+    // Secondary material, agents may skip this section entirely.
     '## Optional',
     `- [Résumé (PDF)](${url}${contact.resume}): Full work history and education.`,
     `- [Sitemap](${url}/sitemap.xml): Every indexable URL on the site.`,

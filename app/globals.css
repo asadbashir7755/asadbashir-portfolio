@@ -18,7 +18,7 @@
  *
  * fg-faint was originally #6b6b73 (3.4:1) and failed axe on six nodes; it was
  * raised to #83838c to pass, then to #8f8f98 for readability rather than bare
- * compliance. Do not darken either of these again — every muted label on the
+ * compliance. Do not darken either of these again, every muted label on the
  * site (skill notes, section eyebrows, dates, contact field names) uses them,
  * which is why they are centralized here instead of patched per component.
  */
@@ -127,7 +127,7 @@ body {
  */
 /*
  * The default state is VISIBLE. Nothing here may depend on JavaScript to make
- * content readable — it previously started at `opacity: 0`, which meant the
+ * content readable, it previously started at `opacity: 0`, which meant the
  * About intro rendered faded until the observer fired, and printed blank.
  *
  * The hidden state is opt-in: RevealObserver stamps `data-reveal="armed"` on
@@ -202,7 +202,7 @@ body {
 /* ------------------------------------------------------------------ */
 /*
  * The marker is a ::before so it never becomes part of the summary's
- * accessible name — a screen reader announces the question, not "▸ question".
+ * accessible name, a screen reader announces the question, not "▸ question".
  */
 .faq-summary {
   display: flex;

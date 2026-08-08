@@ -4,7 +4,7 @@ import Section from '@/components/ui/Section'
 import Reveal from '@/components/ui/Reveal'
 
 /**
- * Homepage skills summary — chips only, no per-skill notes.
+ * Homepage skills summary, chips only, no per-skill notes.
  *
  * The annotated band layout is right for /skills but wrong for the homepage:
  * its inner grid collapses to a single column on mobile, so eight categories
@@ -12,8 +12,8 @@ import Reveal from '@/components/ui/Reveal'
  * screens of scrolling on its own.
  *
  * Chips wrap instead of stacking, so the same information costs two or three
- * lines per category at any width. The full annotated list — which is the part
- * that proves depth — lives one click away on /skills.
+ * lines per category at any width. The full annotated list, which is the part
+ * that proves depth, lives one click away on /skills.
  */
 export function Skills({ index }: { index: string }) {
   const copy = site.sections.skills

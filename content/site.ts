@@ -9,7 +9,7 @@
  * Rule of thumb: if you want to change a word on the site, change it here.
  *
  * Entries marked `// TODO:` are intentionally unfilled. Nothing in this file
- * has been invented — placeholders stay placeholders until the real details
+ * has been invented, placeholders stay placeholders until the real details
  * are added.
  */
 
@@ -21,7 +21,7 @@ export interface SiteMeta {
   /** Canonical origin, no trailing slash. Used for canonical URLs + sitemap. */
   url: string
   title: string
-  /** Shown as the browser-tab title on inner pages: "Page — titleSuffix". */
+  /** Shown as the browser-tab title on inner pages: "Page, titleSuffix". */
   titleSuffix: string
   description: string
   locale: string
@@ -38,7 +38,7 @@ export interface Person {
   tagline: string
   /** Longer bio used in About and JSON-LD `description`. */
   bio: string[]
-  /** Optional — omitted from JSON-LD entirely when undefined. */
+  /** Optional, omitted from JSON-LD entirely when undefined. */
   location?: string
 }
 
@@ -63,7 +63,7 @@ export interface SkillCategory {
 export interface Role {
   company: string
   role: string
-  /** Human-readable, e.g. "Mar 2026 – Present". */
+  /** Human-readable, e.g. "Mar 2026 - Present". */
   period: string
   /** ISO 8601 (YYYY-MM) for JSON-LD. */
   startDate: string
@@ -196,12 +196,12 @@ const SITE_URL = 'https://committodeploy.dev'
 export const site: SiteContent = {
   meta: {
     url: SITE_URL,
-    title: 'Asad Bashir — DevOps Engineer',
+    title: 'Asad Bashir | DevOps Engineer',
     titleSuffix: 'Asad Bashir',
     description:
       'DevOps engineer working on production AWS infrastructure: GitHub Actions CI/CD with OIDC authentication, ECS Fargate, Kubernetes with ArgoCD and Vault, and container security scanning with Snyk and Trivy.',
     locale: 'en_US',
-    // Only list what the rest of this file can actually back up — a keyword
+    // Only list what the rest of this file can actually back up, a keyword
     // that does not appear in the visible content is what search engines
     // discount.
     keywords: [
@@ -226,12 +226,12 @@ export const site: SiteContent = {
     title: 'DevOps Engineer',
     tagline: 'I build the pipelines and infrastructure that put code in production safely.',
     bio: [
-      'I work on production cloud infrastructure for real client projects — CI/CD pipelines, container orchestration, secrets management, and the security scanning that stops bad builds from shipping.',
+      'I work on production cloud infrastructure for real client projects: CI/CD pipelines, container orchestration, secrets management, and the security scanning that stops bad builds from shipping.',
       'Most of my day-to-day is AWS, Terraform and GitHub Actions: provisioning infrastructure as code, replacing static credentials with OIDC-based authentication, getting services onto ECS Fargate behind an ALB, and wiring Snyk and Trivy into pipelines so vulnerable images never reach a registry.',
-      'Outside client work I run a full Kubernetes stack — ArgoCD for GitOps, Vault and External Secrets Operator for secrets, kube-prometheus-stack with Loki for observability — because the fastest way to understand a tool is to operate it when nobody is on call but you.',
+      'Outside client work I run a full Kubernetes stack: ArgoCD for GitOps, Vault and External Secrets Operator for secrets, and kube-prometheus-stack with Loki for observability. The fastest way to understand a tool is to operate it when nobody is on call but you.',
     ],
     // TODO: add city/country if you want it in JSON-LD and the contact block.
-    // Omitted rather than guessed — it is not stated anywhere in the current site.
+    // Omitted rather than guessed, it is not stated anywhere in the current site.
     location: undefined,
   },
 
@@ -250,7 +250,7 @@ export const site: SiteContent = {
       label: 'Skills',
       title: "Tools I've actually shipped with",
       intro:
-        'Grouped by what they do. The note under each is where it was used — if there is no note, treat it as working familiarity rather than production depth.',
+        'Grouped by what they do. The note under each is where it was used. If there is no note, treat it as working familiarity rather than production depth.',
     },
     experience: { label: 'Experience', title: "Where I've done the work" },
     projects: {
@@ -272,7 +272,7 @@ export const site: SiteContent = {
     },
     fieldNotes: {
       label: 'Field Notes',
-      title: 'Notes from the work',
+      title: 'Write-ups from production work',
       intro:
         'Write-ups of things I configured and incidents I handled, including what broke on the way. Published on Medium.',
     },
@@ -285,7 +285,7 @@ export const site: SiteContent = {
    * TODO: every `href` below is a placeholder pointing at the Medium profile,
    * not at a real post. Replace each with the published URL and rewrite the
    * title and description to match what you actually wrote. Delete any entry
-   * you do not intend to write — the section hides itself when this is empty.
+   * you do not intend to write, the section hides itself when this is empty.
    */
   fieldNotes: [
     {
@@ -323,14 +323,20 @@ export const site: SiteContent = {
   about: {
     heading: 'About',
     body: [
-      'What I care about is the boring kind of reliability — credentials that expire on their own, pipelines that fail loudly before production does, and infrastructure that someone else can read six months later without calling me.',
+      'Most of my work sits on Kubernetes: running workloads on EKS and k3s, moving deployments off hand-written YAML onto Helm charts, and delivering them through ArgoCD so the cluster state matches what is in Git rather than what somebody applied by hand.',
+      'The security side is not a separate job from the infrastructure. Snyk and Trivy run as blocking gates in the pipeline, secrets come from Vault and External Secrets Operator instead of environment files, CI authenticates to AWS over OIDC with no stored keys, and IAM policies are scoped down rather than left broad.',
+      // TODO: confirm the wording here matches what you actually did. Delve was
+      // compliance automation, and SOC 2 and GDPR are the two frameworks named.
+      // If the involvement was narrower than this reads, cut it back.
+      'That work also has to stand up to an audit. I have used Delve for compliance automation, and handled the infrastructure side of SOC 2 and GDPR readiness: encryption at rest with KMS, audit logging and retention, least-privilege access, and being able to show where data lives and who can reach it.',
+      'What I care about underneath all of it is the boring kind of reliability. Credentials that expire on their own, pipelines that fail loudly before production does, and infrastructure someone else can read six months later without calling me.',
     ],
     // Replaces the portrait that used to sit here. This is the actual change
     // that took static AWS keys out of CI: the workflow requests an OIDC token
     // and assumes a role, so there is no long-lived secret left to leak.
     snippet: {
       filename: '.github/workflows/deploy.yml',
-      caption: 'How the pipelines authenticate to AWS — no stored keys.',
+      caption: 'How the pipelines authenticate to AWS, with no stored keys.',
       // Lines kept short deliberately: this renders in a narrow column on a
       // phone, and a long line turns into a horizontal scrollbar.
       code: `permissions:
@@ -359,11 +365,11 @@ export const site: SiteContent = {
         { name: 'AWS IAM', note: 'Task execution roles, OIDC trust policies', group: 'AWS' },
         { name: 'AWS Client VPN', note: 'Private network access to internal resources', group: 'AWS' },
         { name: 'VPC & Networking', note: 'Public/private subnets, NAT, route tables', group: 'AWS' },
-        { name: 'Linux', note: 'CentOS, Ubuntu — server administration', group: 'AWS' },
+        { name: 'Linux', note: 'CentOS, Ubuntu server administration', group: 'AWS' },
 
         // Grouped as "Other providers" rather than one group per vendor: RunPod
         // alone made a one-item group, which read as a formatting mistake.
-        // k3s is intentionally NOT listed here — it lives once, under
+        // k3s is intentionally NOT listed here, it lives once, under
         // Containers & Orchestration, with the Hetzner detail in its note.
         {
           name: 'Hetzner Cloud',
@@ -422,21 +428,41 @@ export const site: SiteContent = {
       skills: [
         { name: 'GitHub Actions', note: 'OIDC auth, matrix builds, deploy workflows' },
         { name: 'Jenkins', note: 'Pipelines integrating GitHub and Docker' },
+        // TODO: confirm this is Bitbucket (Atlassian), not GitBucket (the
+        // self-hosted Java app). They are different products and the note below
+        // assumes Bitbucket Pipelines.
+        { name: 'Bitbucket', note: 'Repository hosting and Bitbucket Pipelines' },
         { name: 'GitOps', note: 'Declarative delivery via ArgoCD' },
         { name: 'Git', note: 'Branching strategies, PR-based workflows' },
       ],
     },
     {
-      id: 'security',
-      label: 'Security & Secrets',
+      id: 'devsecops',
+      label: 'DevSecOps',
       skills: [
+        { name: 'Snyk', note: 'Dependency and SAST scanning as a blocking pipeline gate' },
+        { name: 'Trivy', note: 'Container image vulnerability scanning before push' },
         { name: 'HashiCorp Vault', note: 'Kubernetes auth method' },
         { name: 'External Secrets Operator', note: 'Syncing secrets into clusters' },
         { name: 'AWS Secrets Manager', note: 'Injected into ECS task definitions' },
         { name: 'OIDC Authentication', note: 'Removed static AWS keys from CI' },
-        { name: 'Snyk', note: 'Dependency and SAST scanning as a pipeline gate' },
-        { name: 'Trivy', note: 'Container image vulnerability scanning' },
         { name: 'AWS WAF', note: 'Edge filtering in front of CloudFront' },
+        { name: 'Least-privilege IAM', note: 'Scoped roles and policies per service' },
+      ],
+    },
+    {
+      // TODO: check each note below against what you actually did. Anything you
+      // cannot talk through in an interview should be deleted rather than left
+      // here, since this is the section an auditor-minded reader will probe.
+      id: 'compliance',
+      label: 'Compliance',
+      skills: [
+        { name: 'Delve', note: 'Compliance automation' },
+        { name: 'SOC 2', note: 'Infrastructure controls and evidence collection' },
+        { name: 'GDPR', note: 'Data residency, retention and access control' },
+        { name: 'AWS KMS', note: 'Encryption at rest for storage and databases' },
+        { name: 'CloudTrail & audit logging', note: 'Traceability of who changed what' },
+        { name: 'Container Insights', note: 'AWS compliance and monitoring checks' },
       ],
     },
     {
@@ -465,30 +491,33 @@ export const site: SiteContent = {
     {
       company: 'CyberoidTech',
       role: 'DevOps Engineer',
-      period: 'Mar 2026 – Present',
+      period: 'Mar 2026 - Present',
       startDate: '2026-03',
       endDate: null,
       summary:
-        'Production infrastructure for client projects — cloud, CI/CD, security scanning and secrets management.',
+        'Production infrastructure for client projects: cloud, CI/CD, security scanning and secrets management.',
+      // Only the first three render on the homepage (see MAX_HIGHLIGHTS in
+      // Experience.tsx), so these are ordered most-significant-first.
       highlights: [
+        'Implemented the Kubernetes delivery stack: ArgoCD for GitOps, HashiCorp Vault with the Kubernetes auth method, External Secrets Operator for cluster secrets, Helm charts replacing hand-written manifests, and kube-prometheus-stack with Loki and Promtail for metrics and logs.',
         'Replaced long-lived AWS access keys in GitHub Actions with OIDC-based authentication, removing static credentials from CI entirely.',
-        'Automated Docker image builds, ECR pushes and EC2 deployments through GitHub Actions workflows.',
         'Built out an ECS Fargate production environment: cluster setup, IAM task execution roles, task definitions wired to Secrets Manager, and an ALB with path-based routing across two services.',
         'Integrated Snyk (dependency + SAST) and Trivy image scanning as blocking pipeline gates, so critical vulnerabilities stop a deployment rather than reaching production.',
+        'Responded to CVE-2025-1974 (IngressNightmare) by blocking port 8443 and hardening ingress configuration across the cluster.',
+        'Automated Docker image builds, ECR pushes and EC2 deployments through GitHub Actions workflows.',
         'Debugged live staging failures including NEXT_PUBLIC_* build-time variable injection, env file collisions between containers, and an RDS security group misconfiguration.',
-        'Worked with ArgoCD GitOps, HashiCorp Vault using the Kubernetes auth method, and External Secrets Operator for cluster secrets delivery.',
       ],
     },
     {
       company: 'Techinn360',
       role: 'DevOps Intern',
-      period: 'Dec 2025 – Feb 2026',
+      period: 'Dec 2025 - Feb 2026',
       startDate: '2025-12',
       endDate: '2026-02',
       summary:
         'CI/CD automation, containerization and AWS infrastructure for live projects.',
       highlights: [
-        'Built and maintained GitHub Actions pipelines, cutting manual deployment time by roughly 50–60%.',
+        'Built and maintained GitHub Actions pipelines, cutting manual deployment time by roughly 50-60%.',
         'Containerized applications with Docker and managed multi-service environments using Docker Compose.',
         'Deployed and configured AWS infrastructure: EC2, RDS, S3, and CloudFront fronted by WAF.',
         'Configured automated RDS backups and resolved a production server storage limit with minimal downtime.',
@@ -497,13 +526,13 @@ export const site: SiteContent = {
     {
       company: 'Self-directed',
       role: 'Infrastructure Projects',
-      period: '2024 – 2025',
+      period: '2024 - 2025',
       startDate: '2024-01',
       endDate: '2025-12',
       summary:
         'Built and operated real infrastructure independently to develop depth across cloud, Kubernetes and automation.',
       highlights: [
-        'Ran a full Kubernetes stack — ArgoCD, HashiCorp Vault, External Secrets Operator, Helm, and kube-prometheus-stack with Loki and Promtail.',
+        'Ran a self-managed k3s cluster on Hetzner to build depth before doing the same work in production.',
         'Automated multi-server provisioning with Ansible playbooks and roles.',
         'Designed an AWS VPC architecture with public and private subnets, route tables, security groups and a NAT gateway.',
         'Configured ALB and Auto Scaling Groups for EC2-backed applications.',
@@ -513,13 +542,13 @@ export const site: SiteContent = {
     {
       company: 'Academic & Freelance',
       role: 'Full-Stack Developer',
-      period: '2023 – 2024',
+      period: '2023 - 2024',
       startDate: '2023-01',
       endDate: '2024-12',
       summary:
         'Full-stack web applications with payments, authentication and cloud deployment.',
       highlights: [
-        'Built a furnished home rental platform with Stripe payments, real-time availability and an admin panel — delivered as a final year project with distinction.',
+        'Built a furnished home rental platform with Stripe payments, real-time availability and an admin panel, delivered as a final year project with distinction.',
         'Developed a heavy machinery marketplace with search, filtering and inventory management.',
         'Designed REST APIs with authentication, authorization and full CRUD.',
       ],
@@ -590,12 +619,12 @@ export const site: SiteContent = {
   ],
 
   /**
-   * ACHIEVEMENTS — measurable production outcomes, distinct from the day-to-day
+   * ACHIEVEMENTS, measurable production outcomes, distinct from the day-to-day
    * work listed under `experience` and the builds listed under `projects`.
    *
    * These are placeholders. Replace the copy in each entry with the real
    * details; the section renders whatever is in this array, so no component
-   * changes are needed. Delete any entry you do not use — the section hides
+   * changes are needed. Delete any entry you do not use, the section hides
    * itself automatically when the array is empty.
    *
    * `impact` should be the concrete, defensible outcome: a number, a duration,
@@ -615,7 +644,7 @@ export const site: SiteContent = {
     //   title: 'IngressNightmare (CVE-2025-1974) remediation',
     //   description:
     //     'What the vulnerability exposed, how you found the affected clusters, and the remediation path.',
-    //   impact: 'The measurable result — downtime during rollout, clusters patched, time to remediation.',
+    //   impact: 'The measurable result, downtime during rollout, clusters patched, time to remediation.',
     // },
   ],
 
@@ -628,29 +657,29 @@ export const site: SiteContent = {
       // A verifiable badge link is worth more than the line of text alone.
     },
     {
-      name: 'AWS Certified Solutions Architect – Associate (SAA-C03)',
+      name: 'AWS Certified Solutions Architect - Associate (SAA-C03)',
       issuer: 'Amazon Web Services',
       status: 'in-progress',
     },
     {
       name: 'Linux Administration',
-      issuer: 'Course — CentOS & Ubuntu administration, shell scripting, user and permission management',
+      issuer: 'Course: CentOS & Ubuntu administration, shell scripting, user and permission management',
       status: 'earned',
     },
     {
       name: 'Ansible Automation',
-      issuer: 'School of DevOps (Udemy) — playbooks, roles, loops, server automation',
+      issuer: 'School of DevOps (Udemy): playbooks, roles, loops, server automation',
       status: 'earned',
     },
     {
       name: 'MERN Stack Development',
-      issuer: 'Course — MongoDB, Express, React, Node.js',
+      issuer: 'Course: MongoDB, Express, React, Node.js',
       status: 'earned',
     },
   ],
 
   /**
-   * FAQ — trimmed to the three questions whose answers are NOT already visible
+   * FAQ, trimmed to the three questions whose answers are NOT already visible
    * elsewhere on the page. The previous nine largely restated About, Skills,
    * Experience and Projects, which is duplicate content for both readers and
    * search engines.
@@ -667,7 +696,7 @@ export const site: SiteContent = {
     {
       question: 'Has he worked with cloud providers other than AWS?',
       answer:
-        'Yes. Alongside AWS he has worked with Hetzner Cloud — provisioning servers, running a self-managed k3s Kubernetes cluster on them, and using Hetzner S3-compatible object storage — and with RunPod for GPU infrastructure to deploy models. The tooling around them (Terraform, Ansible, containers, GitOps) transfers across providers.',
+        'Yes. Alongside AWS he has worked with Hetzner Cloud, provisioning servers, running a self-managed k3s Kubernetes cluster on them, and using Hetzner S3-compatible object storage, and with RunPod for GPU infrastructure to deploy models. The tooling around them (Terraform, Ansible, containers, GitOps) transfers across providers.',
     },
     {
       question: 'What database experience does he have?',
@@ -688,7 +717,7 @@ export const site: SiteContent = {
   },
 
   /**
-   * These URLs are the `sameAs` array in the Person schema — they are how
+   * These URLs are the `sameAs` array in the Person schema, they are how
    * search engines connect this site to the same real person elsewhere.
    * Keep them canonical: no tracking parameters, no shortlinks.
    */

@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
    * That is exactly what took the site down with ERR_TOO_MANY_REDIRECTS. The
    * canonical host is committodeploy.dev (it is what site.meta.url drives into
    * canonical tags, og:url, the sitemap and JSON-LD), and it is enforced by
-   * setting the apex as the primary domain in Vercel — one layer, one rule.
+   * setting the apex as the primary domain in Vercel, one layer, one rule.
    */
 
   async headers() {

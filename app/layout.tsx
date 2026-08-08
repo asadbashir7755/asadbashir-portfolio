@@ -22,14 +22,14 @@ const jetbrainsMono = JetBrains_Mono({
  * Root metadata. `metadataBase` lets every child route use relative URLs for
  * canonical and OG images and have Next resolve them absolutely.
  *
- * `title.template` gives inner pages "Page — Asad Bashir" without repeating
+ * `title.template` gives inner pages "Page, Asad Bashir" without repeating
  * the suffix in each route.
  */
 export const metadata: Metadata = {
   metadataBase: new URL(site.meta.url),
   title: {
     default: site.meta.title,
-    template: `%s — ${site.meta.titleSuffix}`,
+    template: `%s, ${site.meta.titleSuffix}`,
   },
   description: site.meta.description,
   keywords: site.meta.keywords,

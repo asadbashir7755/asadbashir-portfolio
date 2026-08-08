@@ -5,10 +5,10 @@ import { site } from '@/content/site'
  * Social card, generated at build time from content/site.ts rather than
  * maintained as a separate design file that drifts out of date.
  *
- * Uses system font stacks only — no remote font fetch, so the build stays
+ * Uses system font stacks only, no remote font fetch, so the build stays
  * fast and works offline.
  */
-export const alt = `${site.person.name} — ${site.person.title}`
+export const alt = `${site.person.name}, ${site.person.title}`
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 

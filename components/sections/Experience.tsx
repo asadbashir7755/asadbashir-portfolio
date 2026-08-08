@@ -13,7 +13,7 @@ import Reveal from '@/components/ui/Reveal'
 /**
  * Bullets per role on the homepage. The CyberoidTech entry has six, which on a
  * 390px screen ran to most of a phone screen for one job. Three keeps the
- * strongest evidence — they are ordered most-significant-first in site.ts — and
+ * strongest evidence, they are ordered most-significant-first in site.ts, and
  * the full set stays in the résumé.
  */
 const MAX_HIGHLIGHTS = 3

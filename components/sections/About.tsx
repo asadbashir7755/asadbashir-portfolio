@@ -6,7 +6,7 @@ import Reveal from '@/components/ui/Reveal'
  * The portrait that used to sit in the right column is gone, replaced by a real
  * snippet of the OIDC workflow. For the audience this page is written for, a
  * config that provably removed static credentials from CI says more than a
- * photo does — and it removed a 9MB image and a half-empty column at the same
+ * photo does, and it removed a 9MB image and a half-empty column at the same
  * time.
  */
 /**

@@ -8,7 +8,7 @@ import { personSchema } from '@/lib/schema'
 
 const title = 'Skills'
 const description =
-  'The full list of tools Asad Bashir works with across cloud, infrastructure as code, containers, CI/CD, security, databases and observability — each with a note on where it was actually used.'
+  'The full list of tools Asad Bashir works with across cloud, infrastructure as code, containers, CI/CD, security, databases and observability, each with a note on where it was actually used.'
 
 export const metadata: Metadata = {
   title,
@@ -31,7 +31,7 @@ export default function SkillsPage() {
               '@type': 'WebPage',
               '@id': `${site.meta.url}/skills#page`,
               url: `${site.meta.url}/skills`,
-              name: `${title} — ${site.person.name}`,
+              name: `${title}, ${site.person.name}`,
               description,
               inLanguage: 'en',
               about: { '@id': `${site.meta.url}/#person` },

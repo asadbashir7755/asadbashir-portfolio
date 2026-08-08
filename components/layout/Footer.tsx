@@ -14,7 +14,7 @@ export function Footer() {
               {site.person.name.toLowerCase().replace(/\s+/g, '')}
             </p>
             <p className="mt-1.5 text-sm text-fg-faint">
-              © {year} {site.person.name}. Built with Next.js, deployed on Vercel.
+              © {year} {site.person.name}
             </p>
           </div>
 

@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
 
 /**
- * Scroll-reveal wrapper — a SERVER component.
+ * Scroll-reveal wrapper, a SERVER component.
  *
  * It only emits markup (`class="reveal"`). All the observing is done by a
  * single shared IntersectionObserver in <RevealObserver />, mounted once in
@@ -25,7 +25,7 @@ export function Reveal({
 }: {
   children: ReactNode
   as?: ElementType
-  /** Stagger in ms. Keep small — past ~200ms it reads as sluggish. */
+  /** Stagger in ms. Keep small, past ~200ms it reads as sluggish. */
   delay?: number
   className?: string
 } & Omit<ComponentPropsWithoutRef<'div'>, 'className' | 'children'>) {

@@ -12,7 +12,7 @@ import type { Root, Element } from 'hast'
  *     compete with the cover image for bandwidth
  *   - real width/height read off the file on disk
  *
- * It reads PNG/JPEG headers directly rather than pulling in an image library —
+ * It reads PNG/JPEG headers directly rather than pulling in an image library -
  * every asset in public/images is one of those two, and this keeps the
  * dependency list honest.
  */
@@ -87,7 +87,7 @@ export function rehypeImageAttrs() {
       const src = typeof props.src === 'string' ? props.src : null
       if (!src || !src.startsWith('/') || props.width) continue
 
-      // Resolve inside public/ only — never follow the path outside it.
+      // Resolve inside public/ only, never follow the path outside it.
       const resolved = path.resolve(PUBLIC_DIR, '.' + src)
       if (!resolved.startsWith(PUBLIC_DIR)) continue
 

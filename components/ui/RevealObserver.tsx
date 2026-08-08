@@ -12,7 +12,7 @@ import { useEffect } from 'react'
  * fold at mount. Anything already on screen is left alone, so it can never
  * flash or sit faded waiting for the observer.
  *
- * If this component never runs — JS disabled, hydration error, print — every
+ * If this component never runs, JS disabled, hydration error, print, every
  * element simply stays visible.
  */
 export function RevealObserver() {
