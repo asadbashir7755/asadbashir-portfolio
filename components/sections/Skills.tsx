@@ -17,10 +17,14 @@ import Reveal from '@/components/ui/Reveal'
  */
 /**
  * Chips per category on the homepage. Cloud carries fourteen entries, which
- * wrapped to four rows on a phone and made this one section taller than the
- * rest. The remainder is one click away on /skills.
+ * wrapped to several rows and made this section taller than the rest.
+ *
+ * Seven rather than eight because the overflow marker sits inline at the end of
+ * the row: at eight, Cloud pushed it onto a line of its own where a bare "+4"
+ * read as a rendering fault rather than a control. It is now a "more" link to
+ * that category on /skills.
  */
-const MAX_PER_CATEGORY = 8
+const MAX_PER_CATEGORY = 7
 
 export function Skills({ index }: { index: string }) {
   const copy = site.sections.skills
@@ -45,8 +49,13 @@ export function Skills({ index }: { index: string }) {
                   </li>
                 ))}
                 {category.skills.length > MAX_PER_CATEGORY ? (
-                  <li className="px-1 py-1 text-[13px] text-fg-faint">
-                    +{category.skills.length - MAX_PER_CATEGORY}
+                  <li>
+                    <Link
+                      href={`/skills#${category.id}`}
+                      className="inline-block rounded border border-line-strong px-2 py-1 text-[13px] text-accent transition-opacity hover:opacity-80"
+                    >
+                      more
+                    </Link>
                   </li>
                 ) : null}
               </ul>

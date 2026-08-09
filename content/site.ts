@@ -300,11 +300,13 @@ export const site: SiteContent = {
     // Kept to three short paragraphs. Each one covers a distinct thing:
     // Kubernetes, DevSecOps and compliance, then what I optimise for. The
     // detail behind each lives in Experience and Projects rather than here.
+    // Three short paragraphs, and they are the only visible copy in About.
+    // person.bio is not rendered here any more, it only feeds JSON-LD.
     body: [
-      'Most of my work sits on Kubernetes: workloads on EKS and k3s, Helm charts in place of hand-written YAML, and ArgoCD so cluster state matches Git rather than whatever someone applied by hand.',
+      'I run production infrastructure on AWS and Hetzner: Kubernetes workloads on EKS and k3s, Helm charts in place of hand-written YAML, and ArgoCD so the cluster matches Git rather than whatever someone applied by hand. Terraform provisions it and GitHub Actions ships it.',
       // TODO: confirm this matches what you actually did. Delve was compliance
       // automation, SOC 2 and GDPR the frameworks named. Narrow it if needed.
-      'Security is part of that job, not a separate one. Snyk and Trivy gate the pipeline, secrets come from Vault and External Secrets Operator, CI authenticates to AWS over OIDC with no stored keys, and IAM stays scoped down. It also has to survive an audit, so I have worked with Delve on compliance automation and on the infrastructure side of SOC 2 and GDPR: KMS encryption, audit logging, and being able to show who can reach what.',
+      'Security is part of that job, not a separate one. Snyk and Trivy gate the pipeline, secrets come from Vault, CI authenticates over OIDC with no stored keys. It also has to survive an audit, so I have worked with Delve on compliance automation and on the infrastructure side of SOC 2 and GDPR.',
       'What I optimise for is the boring kind of reliability. Credentials that expire on their own, pipelines that fail loudly before production does, and infrastructure someone else can read six months later without calling me.',
     ],
     // Replaces the portrait that used to sit here. This is the actual change

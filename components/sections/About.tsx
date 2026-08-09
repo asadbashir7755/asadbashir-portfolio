@@ -10,25 +10,19 @@ import Reveal from '@/components/ui/Reveal'
  * time.
  */
 /**
- * Bio paragraphs shown on the homepage. The full three-paragraph version still
- * feeds the Person JSON-LD description; the third is the most detailed and is
- * the easiest to lose above the fold on a phone.
+ * `person.bio` is no longer rendered here. It still feeds the Person JSON-LD
+ * description, but on the page it repeated what about.body already said, so
+ * About ran to five paragraphs beside a code panel half its height.
+ * about.body is now the single source for the visible copy.
  */
-const MAX_BIO = 2
-
 export function About({ index }: { index: string }) {
   const copy = site.sections.about
-  const { person, about } = site
+  const { about } = site
 
   return (
     <Section id="about" index={index} label={copy.label} title={copy.title}>
       <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-14">
         <Reveal className="min-w-0 max-w-2xl space-y-5">
-          {person.bio.slice(0, MAX_BIO).map((paragraph, i) => (
-            <p key={`bio-${i}`} className="text-base leading-relaxed text-fg-muted">
-              {paragraph}
-            </p>
-          ))}
           {about.body.map((paragraph, i) => (
             <p key={`body-${i}`} className="text-base leading-relaxed text-fg-muted">
               {paragraph}

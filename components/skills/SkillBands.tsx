@@ -40,8 +40,12 @@ export function SkillBands({
           <Reveal
             as="li"
             key={category.id}
+            // Anchor target for the per-category "more" links on the homepage.
+            // scroll-mt clears the fixed header, which would otherwise cover
+            // the heading you just jumped to.
+            id={category.id}
             delay={i * 40}
-            className="border-t border-line py-8 first:border-t-0 first:pt-0 last:pb-0"
+            className="scroll-mt-28 border-t border-line py-8 first:border-t-0 first:pt-0 last:pb-0"
           >
             <div className="grid gap-x-10 gap-y-5 md:grid-cols-[11rem_1fr]">
               <Heading className="font-mono text-xs tracking-[0.16em] text-accent uppercase md:pt-0.5">
