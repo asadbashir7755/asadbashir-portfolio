@@ -63,7 +63,7 @@ export interface SkillCategory {
 export interface Role {
   company: string
   role: string
-  /** Human-readable, e.g. "Mar 2026 - Present". */
+  /** Human-readable, e.g. "Dec 2025 - Present". */
   period: string
   /** ISO 8601 (YYYY-MM) for JSON-LD. */
   startDate: string
@@ -470,8 +470,8 @@ export const site: SiteContent = {
     {
       company: 'CyberoidTech',
       role: 'DevOps Engineer',
-      period: 'Mar 2026 - Present',
-      startDate: '2026-03',
+      period: 'Dec 2025 - Present',
+      startDate: '2025-12',
       endDate: null,
       summary:
         'Production infrastructure for client projects: cloud, CI/CD, security scanning and secrets management.',
@@ -490,9 +490,9 @@ export const site: SiteContent = {
     {
       company: 'Techinn360',
       role: 'DevOps Intern',
-      period: 'Dec 2025 - Feb 2026',
-      startDate: '2025-12',
-      endDate: '2026-02',
+      period: 'Jun 2025 - Nov 2025',
+      startDate: '2025-06',
+      endDate: '2025-11',
       summary:
         'CI/CD automation, containerization and AWS infrastructure for live projects.',
       highlights: [
@@ -507,7 +507,7 @@ export const site: SiteContent = {
       role: 'Infrastructure Projects',
       period: '2024 - 2025',
       startDate: '2024-01',
-      endDate: '2025-12',
+      endDate: '2025-05',
       summary:
         'Built and operated real infrastructure independently to develop depth across cloud, Kubernetes and automation.',
       highlights: [
