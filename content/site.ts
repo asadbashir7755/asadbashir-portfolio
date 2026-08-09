@@ -303,7 +303,10 @@ export const site: SiteContent = {
     // Three short paragraphs, and they are the only visible copy in About.
     // person.bio is not rendered here any more, it only feeds JSON-LD.
     body: [
-      'I run production infrastructure on AWS and Hetzner: Kubernetes workloads on EKS and k3s, Helm charts in place of hand-written YAML, and ArgoCD so the cluster matches Git rather than whatever someone applied by hand. Terraform provisions it and GitHub Actions ships it.',
+      // Deliberately provider-agnostic. Naming a specific cloud or distribution
+      // here invited the reader to assume that was the only one. The Skills and
+      // Experience sections carry the specifics.
+      'I run production infrastructure in the cloud: Kubernetes workloads across managed and self-managed clusters, Helm charts in place of hand-written YAML, and ArgoCD so the cluster matches Git rather than whatever someone applied by hand. Terraform provisions it and GitHub Actions ships it.',
       // TODO: confirm this matches what you actually did. Delve was compliance
       // automation, SOC 2 and GDPR the frameworks named. Narrow it if needed.
       'Security is part of that job, not a separate one. Snyk and Trivy gate the pipeline, secrets come from Vault, CI authenticates over OIDC with no stored keys. It also has to survive an audit, so I have worked with Delve on compliance automation and on the infrastructure side of SOC 2 and GDPR.',
