@@ -73,9 +73,18 @@ export interface Role {
   highlights: string[]
 }
 
+/** One section on a project detail page. */
+export interface ProjectSection {
+  heading: string
+  body: string[]
+}
+
 export interface Project {
   slug: string
   title: string
+  /** One line. This is all the homepage card shows, to keep the grid short. */
+  summary: string
+  /** Fuller description, used as the intro on /projects/[slug]. */
   description: string
   stack: string[]
   /** Repository URL, or null when the work lives in a private client repo. */
@@ -83,6 +92,11 @@ export interface Project {
   demo: string | null
   /** External write-up URL for this project, or null. */
   writeup: string | null
+  /**
+   * Detail sections rendered on /projects/[slug]. Add or expand these freely;
+   * the page renders whatever is here and no component needs changing.
+   */
+  details: ProjectSection[]
 }
 
 export interface Achievement {
@@ -105,14 +119,6 @@ export interface Certification {
 export interface FaqItem {
   question: string
   answer: string
-}
-
-/** One Field Notes card. Links out to an external post rather than a local route. */
-export interface FieldNote {
-  title: string
-  description: string
-  /** External URL, e.g. the Medium post. */
-  href: string
 }
 
 export interface NavItem {
@@ -145,7 +151,6 @@ export interface SiteContent {
   nav: NavItem[]
   /** All section heading copy, so no component hardcodes user-facing text. */
   sections: Record<SectionKey, SectionCopy>
-  fieldNotes: FieldNote[]
   hero: {
     /** Rendered in the terminal panel as the executed command. */
     command: string
@@ -272,29 +277,11 @@ export const site: SiteContent = {
     },
     fieldNotes: {
       label: 'Field Notes',
-      title: 'Write-ups from production work',
-      intro:
-        'Write-ups of things I configured and incidents I handled, including what broke on the way. Published on Medium.',
+      title: 'Field Notes',
+      intro: 'Write-ups from production work.',
     },
     contact: { label: 'Contact', title: 'Get in touch' },
   },
-
-  /**
-   * Field Notes cards. Each one links out to a Medium post.
-   *
-   * TODO: every `href` below is a placeholder pointing at the Medium profile,
-   * not at a real post. Replace each with the published URL and rewrite the
-   * title and description to match what you actually wrote. Delete any entry
-   * you do not intend to write, the section hides itself when this is empty.
-   */
-  fieldNotes: [
-    {
-      title: 'TODO: title of your first post',
-      description:
-        'TODO: one or two sentences describing it. Suggested topic, since you have done this work twice: removing static AWS credentials from CI by moving to OIDC.',
-      href: 'https://medium.com/@asadbashir2229526',
-    },
-  ],
 
   hero: {
     command: 'whoami --verbose',
@@ -310,14 +297,15 @@ export const site: SiteContent = {
 
   about: {
     heading: 'About',
+    // Kept to three short paragraphs. Each one covers a distinct thing:
+    // Kubernetes, DevSecOps and compliance, then what I optimise for. The
+    // detail behind each lives in Experience and Projects rather than here.
     body: [
-      'Most of my work sits on Kubernetes: running workloads on EKS and k3s, moving deployments off hand-written YAML onto Helm charts, and delivering them through ArgoCD so the cluster state matches what is in Git rather than what somebody applied by hand.',
-      'The security side is not a separate job from the infrastructure. Snyk and Trivy run as blocking gates in the pipeline, secrets come from Vault and External Secrets Operator instead of environment files, CI authenticates to AWS over OIDC with no stored keys, and IAM policies are scoped down rather than left broad.',
-      // TODO: confirm the wording here matches what you actually did. Delve was
-      // compliance automation, and SOC 2 and GDPR are the two frameworks named.
-      // If the involvement was narrower than this reads, cut it back.
-      'That work also has to stand up to an audit. I have used Delve for compliance automation, and handled the infrastructure side of SOC 2 and GDPR readiness: encryption at rest with KMS, audit logging and retention, least-privilege access, and being able to show where data lives and who can reach it.',
-      'What I care about underneath all of it is the boring kind of reliability. Credentials that expire on their own, pipelines that fail loudly before production does, and infrastructure someone else can read six months later without calling me.',
+      'Most of my work sits on Kubernetes: workloads on EKS and k3s, Helm charts in place of hand-written YAML, and ArgoCD so cluster state matches Git rather than whatever someone applied by hand.',
+      // TODO: confirm this matches what you actually did. Delve was compliance
+      // automation, SOC 2 and GDPR the frameworks named. Narrow it if needed.
+      'Security is part of that job, not a separate one. Snyk and Trivy gate the pipeline, secrets come from Vault and External Secrets Operator, CI authenticates to AWS over OIDC with no stored keys, and IAM stays scoped down. It also has to survive an audit, so I have worked with Delve on compliance automation and on the infrastructure side of SOC 2 and GDPR: KMS encryption, audit logging, and being able to show who can reach what.',
+      'What I optimise for is the boring kind of reliability. Credentials that expire on their own, pipelines that fail loudly before production does, and infrastructure someone else can read six months later without calling me.',
     ],
     // Replaces the portrait that used to sit here. This is the actual change
     // that took static AWS keys out of CI: the workflow requests an OIDC token
@@ -405,6 +393,7 @@ export const site: SiteContent = {
         { name: 'Docker', note: 'Image builds, multi-stage, registries' },
         { name: 'Docker Compose', note: 'Multi-service local environments' },
         { name: 'Kubernetes', note: 'Cluster operations, workloads, networking' },
+        { name: 'kubeadm', note: 'Bootstrapping and upgrading clusters' },
         // The single k3s entry on the site. Do not add another under Cloud.
         { name: 'k3s', note: 'Self-managed cluster on a Hetzner cloud server' },
         { name: 'ArgoCD', note: 'GitOps continuous delivery' },
@@ -547,16 +536,39 @@ export const site: SiteContent = {
     {
       slug: 'github-actions-oidc',
       title: 'Keyless CI/CD with GitHub Actions and AWS OIDC',
+      summary: 'Took static AWS keys out of CI entirely by moving pipelines onto OIDC.',
       description:
         'Removed static AWS credentials from CI by moving to OIDC-based authentication. Pipelines now assume a short-lived role to build images, push to ECR and deploy to EC2, with Snyk and Trivy scanning as blocking gates before anything ships.',
       stack: ['GitHub Actions', 'OIDC', 'AWS IAM', 'ECR', 'EC2', 'Snyk', 'Trivy'],
       repo: 'https://github.com/asadbashir7755/wanderlust-jenkins-cicd',
       demo: null,
       writeup: null,
+      details: [
+        {
+          heading: 'The problem',
+          body: [
+            'CI held long-lived AWS access keys in repository secrets. They never expired, they were valid from anywhere, and rotating them meant touching every workflow that used them.',
+          ],
+        },
+        {
+          heading: 'How it works now',
+          body: [
+            'GitHub Actions requests an OIDC token, and AWS trusts that token through an IAM identity provider. The workflow assumes a role scoped to the repository and branch, and receives credentials that expire when the job ends.',
+            'Nothing long-lived is stored. There is no key to leak, and no rotation to forget.',
+          ],
+        },
+        {
+          heading: 'Security gates',
+          body: [
+            'Snyk covers dependencies and SAST, Trivy scans the built image. Both run as blocking steps, so a critical finding fails the build rather than producing a warning nobody reads.',
+          ],
+        },
+      ],
     },
     {
       slug: 'ecs-fargate',
       title: 'ECS Fargate Production Environment',
+      summary: 'Client production platform on ECS Fargate, with VPN-only access to internal services.',
       description:
         'Client production platform on ECS Fargate: a custom VPC with public and private subnets across availability zones, an ECS cluster running multiple services, and IAM task execution roles with task definitions pulling configuration from Secrets Manager. Traffic splits across an internet-facing load balancer for public routes and an internal one for service-to-service calls, with AWS Client VPN as the only way into internal endpoints. A multi-tenant RDS instance sits in private subnets, and Snyk and Trivy run as blocking gates in the pipeline.',
       stack: [
@@ -576,46 +588,148 @@ export const site: SiteContent = {
       repo: null,
       demo: null,
       writeup: null,
-    },
-    {
-      slug: 'kubernetes-stack',
-      title: 'Production-Replica Kubernetes Stack',
-      description:
-        'A full GitOps cluster on k3s running on a Hetzner cloud server: ArgoCD for continuous delivery, HashiCorp Vault with the Kubernetes auth method, External Secrets Operator, Helm-managed releases, and kube-prometheus-stack with Loki and Promtail for metrics and logs.',
-      stack: ['k3s', 'ArgoCD', 'Vault', 'Helm', 'Prometheus', 'Loki'],
-      repo: 'https://github.com/asadbashir7755',
-      demo: null,
-      writeup: null,
+      details: [
+        {
+          heading: 'Network layout',
+          body: [
+            'A custom VPC with public and private subnets spread across availability zones. Public subnets carry only the internet-facing load balancer. Everything that runs application code sits in private subnets with no public address.',
+          ],
+        },
+        {
+          heading: 'Two load balancers, on purpose',
+          body: [
+            'The internet-facing balancer handles public routes. A second, internal balancer handles service-to-service traffic, so internal calls never leave the VPC or pass through a public listener.',
+            'Internal endpoints are reachable only over AWS Client VPN. There is no public route to them at all, which means an admin interface is not one misconfigured security group away from being exposed.',
+          ],
+        },
+        {
+          heading: 'Services and data',
+          body: [
+            'The ECS cluster runs multiple services, each with its own task definition and IAM task execution role, so a service can only reach what it needs.',
+            'Configuration and credentials come from Secrets Manager at task start rather than being baked into images. A multi-tenant RDS instance sits in private subnets, reachable only from the task security group.',
+          ],
+        },
+        {
+          heading: 'DevSecOps',
+          body: [
+            'Snyk and Trivy run as blocking pipeline gates, so a vulnerable image never reaches the registry, let alone the cluster.',
+          ],
+        },
+      ],
     },
     {
       slug: 'shopix-aws-production',
       title: 'Shopix Production AWS Infrastructure',
+      summary: 'Full-stack ecommerce on a custom VPC, with no static AWS keys and no open SSH.',
       description:
         'A full-stack ecommerce platform on a custom VPC across two availability zones: an internet-facing ALB in public subnets, application servers in private subnets, and RDS MySQL with no public exposure. Deploys run through GitHub Actions using OIDC, so no static AWS keys exist anywhere, and server access is through SSM rather than open SSH.',
       stack: ['AWS', 'VPC', 'ALB', 'RDS', 'ECR', 'SSM', 'OIDC', 'GitHub Actions', 'Docker'],
       repo: 'https://github.com/asadbashir7755/shopix-aws-production',
       demo: null,
       writeup: null,
+      details: [
+        {
+          heading: 'Architecture',
+          body: [
+            'Six subnets across two availability zones. The ALB sits in the public pair, application servers in the private pair, and RDS MySQL in a third pair with no public access. A NAT gateway gives private instances outbound access for pulling images and packages, with no inbound path back.',
+          ],
+        },
+        {
+          heading: 'Access',
+          body: [
+            'No SSH port is open anywhere in the stack. Instance access goes through AWS Systems Manager, which means no key material to distribute and every session logged.',
+            'Deploys authenticate through GitHub OIDC and assume a role, so there are no static AWS credentials in the pipeline.',
+          ],
+        },
+        {
+          heading: 'Status',
+          body: [
+            'The infrastructure was built, deployed and verified, then torn down to avoid running cost. The repository holds the configuration, architecture diagram and screenshots from the running system.',
+          ],
+        },
+      ],
+    },
+    {
+      slug: 'kubernetes-stack',
+      title: 'Production-Replica Kubernetes Stack',
+      summary: 'A full GitOps cluster on k3s: ArgoCD, Vault, Helm and the Prometheus stack.',
+      description:
+        'A full GitOps cluster on k3s running on a Hetzner cloud server: ArgoCD for continuous delivery, HashiCorp Vault with the Kubernetes auth method, External Secrets Operator, Helm-managed releases, and kube-prometheus-stack with Loki and Promtail for metrics and logs.',
+      stack: ['k3s', 'ArgoCD', 'Vault', 'Helm', 'Prometheus', 'Loki'],
+      repo: 'https://github.com/asadbashir7755/kubernetes-projects',
+      demo: null,
+      writeup: null,
+      details: [
+        {
+          heading: 'Why build it',
+          body: [
+            'Running a cluster you own, where nobody else is on call, is the fastest way to understand what the managed version is doing for you. This one was built to mirror a production setup rather than a demo.',
+          ],
+        },
+        {
+          heading: 'Delivery',
+          body: [
+            'ArgoCD watches the repository and reconciles the cluster to match it, so the deployed state is whatever is in Git. Releases are Helm charts rather than loose manifests, which makes a rollback a version change instead of an archaeology exercise.',
+          ],
+        },
+        {
+          heading: 'Secrets and observability',
+          body: [
+            'Vault holds the secrets, using the Kubernetes auth method so pods authenticate with their service account rather than a stored token. External Secrets Operator syncs them into the cluster as needed.',
+            'kube-prometheus-stack covers metrics, with Loki and Promtail aggregating logs across workloads.',
+          ],
+        },
+      ],
     },
     {
       slug: 'ansible-provisioning',
       title: 'Ansible Multi-Server Provisioning',
+      summary: 'Role-based provisioning across environments, with Vault-encrypted secrets per environment.',
       description:
         'Automated provisioning and configuration across multiple servers using playbooks, roles, variables and conditionals, including EC2 automation via Ansible collections and passwordless SSH bootstrapping.',
       stack: ['Ansible', 'Linux', 'SSH', 'EC2', 'Bash'],
       repo: 'https://github.com/asadbashir7755/ansible-learning',
       demo: null,
       writeup: null,
+      details: [
+        {
+          heading: 'Structure',
+          body: [
+            'Playbooks split into roles so the same building blocks serve different hosts, with variables and conditionals handling the differences between them rather than separate copies per environment.',
+          ],
+        },
+        {
+          heading: 'Secrets',
+          body: [
+            'Staging and production each carry their own Ansible Vault file, encrypted with AES256. The same playbooks run against both, and no credential appears in plaintext at any point.',
+          ],
+        },
+      ],
     },
     {
       slug: 'rental-platform',
       title: 'Furnished Home Rentals Platform',
+      summary: 'MERN rental marketplace with Stripe payments and an admin panel. Final year project.',
       description:
         'Full-stack rental marketplace with advanced search, Stripe payments, real-time availability and an admin panel for landlords to manage listings and reservations. Final year project, graded with distinction.',
       stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'AWS'],
       repo: 'https://github.com/asadbashir7755/furnished-home-rental',
       demo: null,
       writeup: null,
+      details: [
+        {
+          heading: 'What it does',
+          body: [
+            'Search and filtering over listings, real-time availability so two people cannot book the same dates, Stripe payments, and an admin panel for managing listings and reservations.',
+          ],
+        },
+        {
+          heading: 'Where it led',
+          body: [
+            'This is the project that pulled me toward infrastructure. Getting it deployed and keeping it running turned out to be the harder and more interesting half, and the CI pipeline built around it is a separate repository.',
+          ],
+        },
+      ],
     },
   ],
 

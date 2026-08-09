@@ -1,27 +1,28 @@
 import { site } from '@/content/site'
 import Section from '@/components/ui/Section'
 import Reveal from '@/components/ui/Reveal'
+import PostCard from '@/components/posts/PostCard'
+import type { PostMeta } from '@/lib/posts'
 
 /**
- * Combines what used to be two things: the blog preview and the achievements
- * list. Both were saying "here is a piece of work worth reading about", and
- * the blog half was rendering an empty state because there was nothing to show.
+ * Self-hosted write-ups. Posts are markdown files in content/posts, read at
+ * build time by lib/posts.ts, so adding one is a matter of dropping in a new
+ * .md file with frontmatter. Nothing in this component needs touching.
  *
- * Cards link straight out to Medium rather than to a local route, so there is
- * no /blog surface to keep alive. Content lives in site.fieldNotes; the section
- * hides itself when that array is empty, so unfinished entries can just be
- * deleted rather than left to reach the live site.
+ * The grid tracks the post count rather than always using three columns: the
+ * container paints the hairlines, so a single post in a 3-col grid rendered as
+ * a third-width card beside two empty bordered cells.
  */
-export function FieldNotes({ index }: { index: string }) {
+export function FieldNotes({ posts, index }: { posts: PostMeta[]; index: string }) {
   const copy = site.sections.fieldNotes
-  const { fieldNotes } = site
-  if (fieldNotes.length === 0) return null
+  if (posts.length === 0) return null
 
-  // Track the count rather than always using three columns. The container
-  // paints the hairlines, so a single card in a 3-col grid rendered as a
-  // third-width card next to two empty bordered cells.
   const columns =
-    fieldNotes.length === 1 ? '' : fieldNotes.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'
+    posts.length === 1
+      ? 'sm:max-w-xl'
+      : posts.length === 2
+        ? 'sm:grid-cols-2'
+        : 'sm:grid-cols-2 lg:grid-cols-3'
 
   return (
     <Section
@@ -31,35 +32,10 @@ export function FieldNotes({ index }: { index: string }) {
       title={copy.title}
       intro={copy.intro}
     >
-      <div className={`grid gap-px overflow-hidden rounded-xl border border-line bg-line ${columns}`}>
-        {/* Keyed by index: this list is static, never reordered or filtered,
-            and the placeholder entries can legitimately share a title. */}
-        {fieldNotes.map((note, i) => (
-          <Reveal key={i} delay={i * 50} className="h-full bg-bg">
-            <article className="flex h-full flex-col p-6 sm:p-7">
-              <p className="font-mono text-xs text-accent">
-                {String(i + 1).padStart(2, '0')}
-              </p>
-
-              <h3 className="mt-4 text-base font-semibold tracking-tight text-fg">
-                {note.title}
-              </h3>
-
-              <p className="mt-3 flex-grow text-sm leading-relaxed text-fg-muted">
-                {note.description}
-              </p>
-
-              <div className="mt-6">
-                <a
-                  href={note.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-[13px] text-accent transition-opacity hover:opacity-80"
-                >
-                  Read more <span aria-hidden="true">↗</span>
-                </a>
-              </div>
-            </article>
+      <div className={`grid gap-6 ${columns}`}>
+        {posts.map((post, i) => (
+          <Reveal key={post.slug} delay={i * 50} className="h-full">
+            <PostCard post={post} />
           </Reveal>
         ))}
       </div>

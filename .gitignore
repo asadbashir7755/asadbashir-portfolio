@@ -16,3 +16,10 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# The user's global gitignore (~/.gitignore_global) excludes *.md so that stray
+# credential notes never get committed. That rule also silently swallowed every
+# post in content/posts, which is why the blog shipped empty. A repo-level
+# negation takes precedence over the global file, so markdown here is tracked.
+!*.md
+!content/posts/*.md

@@ -1,4 +1,5 @@
 import { site } from '@/content/site'
+import type { PostMeta } from '@/lib/posts'
 
 /**
  * JSON-LD builders.
@@ -97,3 +98,40 @@ export function homeGraph() {
   }
 }
 
+
+/**
+ * BlogPosting graph for a single Field Note. Posts are self-hosted, so the
+ * canonical URL is on this domain and there is no external publisher.
+ */
+export function postGraph(post: PostMeta) {
+  const url = `${meta.url}/field-notes/${post.slug}`
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        '@id': `${url}#post`,
+        headline: post.title,
+        description: post.description,
+        url,
+        datePublished: post.date,
+        dateModified: post.date,
+        inLanguage: 'en',
+        keywords: post.tags.join(', '),
+        articleSection: post.category,
+        image: `${url}/opengraph-image`,
+        author: { '@id': PERSON_ID },
+        publisher: { '@id': PERSON_ID },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: meta.url },
+          { '@type': 'ListItem', position: 2, name: post.title, item: url },
+        ],
+      },
+      personSchema(),
+    ],
+  }
+}

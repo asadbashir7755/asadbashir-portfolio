@@ -11,6 +11,9 @@ import Reveal from '@/components/ui/Reveal'
  */
 const MAX_PROJECTS = 4
 
+/** Stack chips per card. The rest are summarised as "+n". */
+const MAX_STACK = 5
+
 export function Projects({ index }: { index: string }) {
   const copy = site.sections.projects
   const shown = site.projects.slice(0, MAX_PROJECTS)
@@ -31,11 +34,14 @@ export function Projects({ index }: { index: string }) {
               <h3 className="text-base font-semibold tracking-tight text-fg">{project.title}</h3>
 
               <p className="mt-3 flex-grow text-sm leading-relaxed text-fg-muted">
-                {project.description}
+                {project.summary}
               </p>
 
+              {/* Capped: the ECS entry carries twelve technologies, which on a
+                  phone wrapped to four rows and made one card taller than the
+                  rest of the grid. The full list is on the detail page. */}
               <ul className="mt-5 flex flex-wrap gap-1.5">
-                {project.stack.map((tech, ti) => (
+                {project.stack.slice(0, MAX_STACK).map((tech, ti) => (
                   <li
                     key={ti}
                     className="rounded border border-line bg-surface px-2 py-0.5 font-mono text-[11px] text-fg-faint"
@@ -43,9 +49,21 @@ export function Projects({ index }: { index: string }) {
                     {tech}
                   </li>
                 ))}
+                {project.stack.length > MAX_STACK ? (
+                  <li className="px-1 py-0.5 font-mono text-[11px] text-fg-faint">
+                    +{project.stack.length - MAX_STACK}
+                  </li>
+                ) : null}
               </ul>
 
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-4">
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="font-mono text-[13px] text-accent transition-opacity hover:opacity-80"
+                >
+                  Read more →
+                </Link>
+
                 {project.repo ? (
                   <a
                     href={project.repo}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { site } from '@/content/site'
+import { getAllPosts } from '@/lib/posts'
 import { homeGraph } from '@/lib/schema'
 import JsonLd from '@/components/ui/JsonLd'
 import Hero from '@/components/sections/Hero'
@@ -23,17 +24,18 @@ export default function HomePage() {
    * empty. Hardcoded numbers left a visible gap in the sequence as soon as a
    * section dropped out.
    *
-   * Achievements is no longer rendered: it and the blog preview were both
-   * "here is a piece of work worth reading about", so they are now one Field
-   * Notes section. The component and site.achievements are kept in the repo,
-   * unused, so the CVE write-up template in site.ts is not lost.
+   * Field Notes posts are markdown files in content/posts, read at build time.
+   * Achievements is not rendered: it and the writing preview were both "here is
+   * a piece of work worth reading about". The component and site.achievements
+   * stay in the repo, unused, so nothing in site.ts is lost.
    */
   const next = (() => {
     let n = 0
     return () => String(++n).padStart(2, '0')
   })()
 
-  const hasFieldNotes = site.fieldNotes.length > 0
+  const posts = getAllPosts().slice(0, 3)
+  const hasFieldNotes = posts.length > 0
 
   return (
     <>
@@ -45,7 +47,7 @@ export default function HomePage() {
       <Projects index={next()} />
       <Certifications index={next()} />
       <Faq index={next()} />
-      {hasFieldNotes ? <FieldNotes index={next()} /> : null}
+      {hasFieldNotes ? <FieldNotes posts={posts} index={next()} /> : null}
       <Contact index={next()} />
     </>
   )

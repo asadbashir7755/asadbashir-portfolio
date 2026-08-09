@@ -1,4 +1,5 @@
 import { site } from '@/content/site'
+import { getAllPosts } from '@/lib/posts'
 
 /**
  * /llms.txt, https://llmstxt.org
@@ -29,6 +30,7 @@ export const dynamic = 'force-static'
 export function GET() {
   const { person, meta, contact, social, certifications, skills, experience } = site
   const url = meta.url
+  const posts = getAllPosts()
 
   const lines: string[] = [
     // 1. H1, required.
@@ -55,9 +57,20 @@ export function GET() {
     '## Pages',
     `- [Home](${url}): Overview, experience, projects and contact details.`,
     `- [Skills](${url}/skills): Every tool grouped by category, each with a note on where it was used in production.`,
+    ...site.projects.map(
+      (p) => `- [${p.title}](${url}/projects/${p.slug}): ${p.summary}`,
+    ),
     '',
   ]
 
+
+  if (posts.length > 0) {
+    lines.push('## Field Notes')
+    for (const p of posts) {
+      lines.push(`- [${p.title}](${url}/field-notes/${p.slug}): ${p.description}`)
+    }
+    lines.push('')
+  }
 
   lines.push(
     '## Profiles',

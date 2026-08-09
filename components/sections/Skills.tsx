@@ -15,9 +15,15 @@ import Reveal from '@/components/ui/Reveal'
  * lines per category at any width. The full annotated list, which is the part
  * that proves depth, lives one click away on /skills.
  */
+/**
+ * Chips per category on the homepage. Cloud carries fourteen entries, which
+ * wrapped to four rows on a phone and made this one section taller than the
+ * rest. The remainder is one click away on /skills.
+ */
+const MAX_PER_CATEGORY = 8
+
 export function Skills({ index }: { index: string }) {
   const copy = site.sections.skills
-  const total = site.skills.reduce((n, c) => n + c.skills.length, 0)
 
   return (
     <Section id="skills" index={index} label={copy.label} title={copy.title}>
@@ -30,7 +36,7 @@ export function Skills({ index }: { index: string }) {
               </h3>
 
               <ul className="flex flex-wrap gap-1.5">
-                {category.skills.map((skill, si) => (
+                {category.skills.slice(0, MAX_PER_CATEGORY).map((skill, si) => (
                   <li
                     key={si}
                     className="rounded border border-line bg-surface px-2 py-1 text-[13px] text-fg-muted"
@@ -38,6 +44,11 @@ export function Skills({ index }: { index: string }) {
                     {skill.name}
                   </li>
                 ))}
+                {category.skills.length > MAX_PER_CATEGORY ? (
+                  <li className="px-1 py-1 text-[13px] text-fg-faint">
+                    +{category.skills.length - MAX_PER_CATEGORY}
+                  </li>
+                ) : null}
               </ul>
             </div>
           </Reveal>
@@ -50,7 +61,7 @@ export function Skills({ index }: { index: string }) {
             href="/skills"
             className="font-mono text-sm text-accent transition-opacity hover:opacity-80"
           >
-            All {total} tools, with where each was used →
+            Every tool, with where each was used →
           </Link>
         </div>
       </Reveal>
